@@ -1,7 +1,4 @@
-% (C) Copyright 2018 Mohamed Rezk
-% (C) Copyright 2020 CPP visual motion localizer developpers
 
-%% mainScript
 
 % Clear all the previous stuff
 clc;
@@ -26,16 +23,23 @@ try
     %% Init the experiment
     [cfg] = initPTB(cfg);
 
+    
+    % refractor 
+    % s = loadAndMakeBeepAudio(cfg)
+    %
+    
+    % do expDesign - pseudorandom order of blocks and targets in events
+    % expDesign.m
+    % 
+    
     cfg = postInitializationSetup(cfg);
-
-    [el] = eyeTracker('Calibration', cfg);
-
-    %     [cfg] = expDesign(cfg);
 
     % Prepare for the output logfiles with all
     logFile.extraColumns = cfg.extraColumns;
+    logFile = saveEventsFile('init', cfg, logFile);
     logFile = saveEventsFile('open', cfg, logFile);
-
+    
+    
     disp(cfg);
 
     % Show experiment instruction
@@ -45,8 +49,6 @@ try
     getResponse('init', cfg.keyboard.responseBox, cfg);
 
     %% Experiment Start
-
-    eyeTracker('StartRecording', cfg);
 
     cfg = getExperimentStart(cfg);
 
@@ -58,6 +60,9 @@ try
 
         waitFor(cfg, cfg.timing.onsetDelay);
 
+        % experimenter's cue to know where to stimulate
+        cueOnset = playCueAudio(cfg, thisBlock);
+    
         for iTrial = 1:cfg.design.nbTrials
 
             fprintf('\n - Running trial %.0f \n', iTrial);
@@ -67,14 +72,11 @@ try
 
             [thisEvent, thisFixation, cfg] = preTrialSetup(cfg, iBlock, iTrial);
 
-            % AVAILABLE IN A NEW RELEASE SOON
-            %
-            % eyeTracker('Message', cfg, ...
-            %     ['start_trial-', num2str(iTrial), '_', thisEvent.trial_type]);
 
-            % play the dots and collect onset and duraton of the event
-            [onset, duration] = doTrial(cfg, thisEvent, thisFixation);
-
+            % play the sounds and collect onset and duration of the event
+            [onset, duration] = doAuditoryMotion(cfg, thisEvent);
+            
+            
             thisEvent = preSaveSetup( ...
                                      thisEvent, ...
                                      iBlock, ...
@@ -88,15 +90,12 @@ try
             % collect the responses and appends to the event structure for
             % saving in the tsv file
             responseEvents = getResponse('check', cfg.keyboard.responseBox, cfg);
-
+            
+            responseEvents(1).isStim = logFile.isStim;
             responseEvents(1).fileID = logFile.fileID;
             responseEvents(1).extraColumns = logFile.extraColumns;
             saveEventsFile('save', cfg, responseEvents);
 
-            % AVAILABLE IN A NEW RELEASE SOON
-            %
-            % eyeTracker('Message', cfg, ...
-            %     ['end_trial-', num2str(iTrial), '_', thisEvent.trial_type]);
 
             waitFor(cfg, cfg.timing.ISI);
 
@@ -116,8 +115,6 @@ try
 
     getResponse('stop', cfg.keyboard.responseBox);
     getResponse('release', cfg.keyboard.responseBox);
-
-    eyeTracker('Shutdown', cfg);
 
     createJson(cfg, cfg);
 

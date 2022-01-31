@@ -20,15 +20,14 @@ function [cfg] = setParameters()
     cfg.debug.smallWin = false; % To test on a part of the screen, change to 1
     cfg.debug.transpWin = true; % To test with trasparent full size screen
 
-    cfg.verbose = 0;
+    cfg.verbose = 1;
 
-    cfg.skipSyncTests = 0;
-
+    cfg.skipSyncTests = 1; % 0 
     %% Engine parameters
 
     cfg.testingDevice = 'mri';
     cfg.eyeTracker.do = false;
-    cfg.audio.do = false;
+    cfg.audio.do = true;
 
     cfg = setMonitor(cfg);
 
@@ -42,55 +41,38 @@ function [cfg] = setParameters()
 
     %% Experiment Design
 
-    cfg.design.blockNames = {'condition_1', 'condition_2'};
+    cfg.design.blockNames = {'hand','feet', 'nose', 'tongue', ...
+                            'lips', 'cheek', 'forehead'};
 
-    cfg.design.nbBlocks = 2;
+    % per condition
+    cfg.design.nbBlocks = 3;
+    % per block
     cfg.design.nbTrials = 4;
 
     %% Timing
 
-    % FOR 7T: if you want to create localizers on the fly, the following must be
-    % multiples of the scanneryour sequence TR
-    %
     % IBI
     % block length = (cfg.eventDuration + cfg.ISI) * cfg.design.nbEventsPerBlock
 
     cfg.timing.eventDuration = 2; % second
 
     % Time between blocs in secs
-    cfg.timing.IBI = 2;
+    cfg.timing.IBI = 8;
     % Time between events in secs
-    cfg.timing.ISI = 1;
-    % Number of seconds before the motion stimuli are presented
-    cfg.timing.onsetDelay = 2;
-    % Number of seconds after the end all the stimuli before ending the run
-    cfg.timing.endDelay = 2;
+    cfg.timing.ISI = 2;
+    
+    cfg.timing.beepDuration = 0.25; % auditory beeps length in second
 
-    % reexpress those in terms of repetition time
-    if cfg.pacedByTriggers.do
-
-        cfg.pacedByTriggers.quietMode = true;
-        cfg.pacedByTriggers.nbTriggers = 1;
-
-        cfg.timing.eventDuration = cfg.mri.repetitionTime / 2 - 0.04; % second
-
-        % Time between blocs in secs
-        cfg.timing.IBI = 0;
-        % Time between events in secs
-        cfg.timing.ISI = 0;
-        % Number of seconds before the motion stimuli are presented
-        cfg.timing.onsetDelay = 0;
-        % Number of seconds after the end all the stimuli before ending the run
-        cfg.timing.endDelay = 2;
-
-    end
 
     %% Task(s)
 
-    cfg.task.name = 'template PTB experiment';
+    % task name 
+    cfg.task.name = 'somatotopy';
+     % it won't ask you about group or session
+    cfg.subject.askGrpSess = [0 0];
 
     % Instruction
-    cfg.task.instruction = '1-Detect the RED fixation cross\n \n\n';
+    cfg.task.instruction = 'Detect slower brushes\n \n\n';
 
     % Fixation cross (in pixels)
     cfg.fixation.type = 'cross';
@@ -108,54 +90,95 @@ function [cfg] = setParameters()
                         'target', ...
                         'event', ...
                         'block', ...
+                        'vis_duration', ...
+                        'vis_onset', ...
                         'keyName'};
+                    
+    %% Auditory Stimulation
 
+    cfg.audio.channels = 2;
 end
 
 function cfg = setKeyboards(cfg)
-    cfg.keyboard.escapeKey = 'ESCAPE';
-    cfg.keyboard.responseKey = { ...
-                                'r', 'g', 'y', 'b', ...
-                                'd', 'n', 'z', 'e', ...
-                                't'};
+
+cfg.keyboard.escapeKey = 'ESCAPE';
+cfg.keyboard.responseKey = {'d', 'a', 'c', 'b'};
+cfg.keyboard.keyboard = [];
+cfg.keyboard.responseBox = [];
+
+
+if strcmpi(cfg.testingDevice, 'mri')
     cfg.keyboard.keyboard = [];
     cfg.keyboard.responseBox = [];
-
-    if strcmpi(cfg.testingDevice, 'mri')
-        cfg.keyboard.keyboard = [];
-        cfg.keyboard.responseBox = [];
-    end
+end
 end
 
 function cfg = setMRI(cfg)
-    % letter sent by the trigger to sync stimulation and volume acquisition
-    cfg.mri.triggerKey = 't';
-    cfg.mri.triggerNb = 1;
 
-    cfg.mri.repetitionTime = 1.8;
+% BIDS compatible logfile folder
+cfg.dir.output = fullfile(...
+    fileparts(mfilename('fullpath')),'..', ...
+    'output');
+    
+% letter sent by the trigger to sync stimulation and volume acquisition
+cfg.mri.triggerKey = 's';
+% for hyberpand insert 4 here! ! ! 
+cfg.mri.triggerNb = 1; 
 
-    cfg.bids.MRI.Instructions = 'Detect the RED fixation cross';
-    cfg.bids.MRI.TaskDescription = [];
+% json sidecar file for bold data
+cfg.mri.repetitionTime = 1.75;
+cfg.bids.MRI.Instructions = 'Detect slower brushes';
+cfg.bids.MRI.TaskDescription = [];
+cfg.bids.mri.SliceTiming = [0, 0.9051, 0.0603, 0.9655, 0.1206, 1.0258, 0.181, ...
+                      1.0862, 0.2413, 1.1465, 0.3017, 1.2069, 0.362, ...
+                      1.2672, 0.4224, 1.3275, 0.4827, 1.3879, 0.5431, ...
+                      1.4482, 0.6034, 1.5086, 0.6638, 1.5689, 0.7241, ...
+                      1.6293, 0.7844, 1.6896, 0.8448, 0, 0.9051, 0.0603, ...
+                      0.9655, 0.1206, 1.0258, 0.181, 1.0862, 0.2413, ...
+                      1.1465, 0.3017, 1.2069, 0.362, 1.2672, 0.4224, ...
+                      1.3275, 0.4827, 1.3879, 0.5431, 1.4482, 0.6034, ...
+                      1.5086, 0.6638, 1.5689, 0.7241, 1.6293, 0.7844, ...
+                      1.6896, 0.8448];
+
+%Number of seconds before the rhythmic sequence (exp) are presented
+cfg.timing.onsetDelay = 2 *cfg.mri.repetitionTime; %5.2s
+% Number of seconds after the end of all stimuli before ending the fmri run!
+cfg.timing.endDelay = 4 * cfg.mri.repetitionTime; %10.4s
+
+
+% ending timings for fMRI
+%end the screen after thank you screen
+cfg.timing.endScreenDelay = 2; 
+% delay for script ending
+% waiting time for participants responding how many times they detected the
+% velocity change
+cfg.timing.endResponseDelay = 10; 
+
+
 
 end
 
+
+
 function cfg = setMonitor(cfg)
 
-    % Monitor parameters for PTB
-    cfg.color.white = [255 255 255];
-    cfg.color.black = [0 0 0];
-    cfg.color.red = [255 0 0];
-    cfg.color.grey = mean([cfg.color.black; cfg.color.white]);
-    cfg.color.background = cfg.color.black;
-    cfg.text.color = cfg.color.white;
+% Text format 
+cfg.text.font         = 'Arial'; %'Courier New'
+cfg.text.size         = 48; %18
 
-    % Monitor parameters
-    cfg.screen.monitorWidth = 50; % in cm
-    cfg.screen.monitorDistance = 40; % distance from the screen in cm
 
-    if strcmpi(cfg.testingDevice, 'mri')
-        cfg.screen.monitorWidth = 25;
-        cfg.screen.monitorDistance = 95;
-    end
+% Monitor parameters for PTB
+cfg.color.white = [255 255 255];
+cfg.color.black = [0 0 0];
+cfg.color.red = [255 0 0];
+cfg.color.grey = mean([cfg.color.black; cfg.color.white]);
+cfg.color.background = cfg.color.grey;
+cfg.text.color = cfg.color.white;
+
+% Monitor parameters
+if strcmpi(cfg.testingDevice, 'mri')
+    cfg.screen.monitorWidth = 69.8;
+    cfg.screen.monitorDistance = 170;
+end
 
 end

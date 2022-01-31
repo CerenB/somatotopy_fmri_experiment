@@ -7,7 +7,8 @@ function varargout = preSaveSetup(varargin)
 
     [thisEvent, iBlock, iTrial, duration, onset, cfg, logFile] = ...
         deal(varargin{:});
-
+    
+    thisEvent.isStim = logFile.isStim;
     thisEvent.event = iTrial;
     thisEvent.block = iBlock;
     thisEvent.keyName = 'n/a';
