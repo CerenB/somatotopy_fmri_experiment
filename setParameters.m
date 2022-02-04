@@ -46,8 +46,6 @@ function [cfg] = setParameters()
 
     % per condition
     cfg.design.nbRepetitions = 3;
-%     % per block
-%     cfg.design.nbTrials = 4;
 
     % we have 12s block, and we brush in every 1s
     cfg.design.nbEventsPerBlock = 12;
@@ -68,12 +66,14 @@ function [cfg] = setParameters()
 
     % Time between blocs in secs
     cfg.timing.IBI = 8;
-    % Time between events in secs
-    cfg.timing.ISI = 0.75;
+%     % Time between events in secs
+%     cfg.timing.ISI = 0.25;
     % auditory beeps length in second
     cfg.timing.beepDuration = 0.25; 
 
 
+    % alternative - with more beeps within 1 s
+    
     %% Task(s)
 
     % task name 
@@ -97,6 +97,7 @@ function [cfg] = setParameters()
     cfg.target.maxNbPerBlock = 2;
     
     % the experimenter will brush not in 1s but in 500ms - higher velocity
+    % only used in logfile
     cfg.target.duration = 0.5;
 
     cfg.extraColumns = { ...
@@ -113,6 +114,10 @@ function [cfg] = setParameters()
     %% Auditory Stimulation
 
     cfg.audio.channels = 1;
+    
+    % repeat body part audio cues twice
+    cfg.audio.cueRepeat = 2;
+    
 end
 
 function cfg = setKeyboards(cfg)
@@ -162,7 +167,8 @@ cfg.timing.onsetDelay = 4 *cfg.mri.repetitionTime; %8.75
 cfg.timing.endDelay = 5 * cfg.mri.repetitionTime; %8.75
 
 % beginning of exp, give experimenter a cue to get ready for tactile stim
-cfg.timing.audiCueOnset = cfg.timing.onsetDelay - 4.5;
+cfg.timing.experimenterCueOnsetDelay = 2; % in s
+cfg.timing.afterCueOnsetDelay = cfg.timing.onsetDelay - cfg.timing.experimenterCueOnsetDelay;
 
 % ending timings for fMRI
 %end the screen after thank you screen

@@ -28,8 +28,8 @@ soundTarget = cfg.soundData.T(1,:);
 % while embed two target sounds within 1s
 
 % whole length of trial/event
-eventDuration = cfg.timing.eventDuration; 
-    
+eventDuration = cfg.timing.eventDuration;
+   
 
 t = [0 : round(eventDuration * fs)-1] / fs; 
 eventNoTarget = zeros(1,length(t));
