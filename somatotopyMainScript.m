@@ -54,6 +54,9 @@ try
 
     getResponse('start', cfg.keyboard.responseBox);
 
+    % baseline wait with fixation cross while fMRI is ON
+    waitFor(cfg, cfg.timing.onsetDelay);
+     
     %% For Each Block
 
     for iBlock = 1:cfg.design.nbBlocks
@@ -64,8 +67,6 @@ try
         [thisBlock]  = playCueAudio(cfg, iBlock);
         % % % we might need certain wait period here
         % % % after playCue, wait the rest
-        
-        waitFor(cfg, cfg.timing.onsetDelay);
     
         for iEvent = 1:cfg.design.nbEventsPerBlock
 
@@ -91,31 +92,22 @@ try
 
             saveEventsFile('save', cfg, thisEvent);
 
-            % collect the responses and appends to the event structure for
-            % saving in the tsv file
-%             responseEvents = getResponse('check', cfg.keyboard.responseBox, ...
-%                                          cfg, getOnlyPress);
-%             
-%             responseEvents(1).isStim = logFile.isStim;
-%             responseEvents(1).fileID = logFile.fileID;
-%             responseEvents(1).extraColumns = logFile.extraColumns;
-%             saveEventsFile('save', cfg, responseEvents);
-
             responseEvents = getResponse('check', cfg.keyboard.responseBox, cfg);
             collectAndSave(responseEvents, cfg, logFile, cfg.experimentStart);
 
             waitFor(cfg, cfg.timing.ISI);
 
         end
-
+        
+        % wait time in between 2 blocks
+        waitFor(cfg, cfg.timing.IBI);
+        
     end
 
     % End of the run for the BOLD to go down
     waitFor(cfg, cfg.timing.endDelay);
 
     cfg = getExperimentEnd(cfg);
-
-    eyeTracker('StopRecordings', cfg);
 
     % Close the logfiles
     saveEventsFile('close', cfg, logFile);
