@@ -1,4 +1,4 @@
-function [onset, duration] = doAuditory(cfg, thisEvent)
+function [onset, duration] = doAudioVisual(cfg, thisEvent, thisFixation)
 
     % Play the auditopry stimulation of moving in 4 directions or static noise bursts
     %
@@ -23,10 +23,11 @@ function [onset, duration] = doAuditory(cfg, thisEvent)
     % draw first fixation and get a first visual time stamp
     % ideally we would want to synch that first time stamp and the sound start
     isFixationTarget = thisEvent.fixationTarget(1);
-    targetDuration = cfg.target.duration;
     
-    thisFixation.fixation = cfg.fixation;
-    thisFixation.screen = cfg.screen;
+    % % % CB: target duration == 1s as the Non-target duration in auditory
+    % % % but in vision it is 500ms for flickering
+    targetDuration = cfg.target.duration;
+
     if isFixationTarget == 1
         thisFixation.fixation.color = cfg.fixation.colorTarget;
     end
@@ -58,3 +59,6 @@ function [onset, duration] = doAuditory(cfg, thisEvent)
                                                 waitForEndOfPlayback);
 
     duration = estStopTime - onset;
+    
+    % playTime = PsychPortAudio('Start', pahandle, repetitions, startCue, waitForDeviceStart);
+    

@@ -1,4 +1,7 @@
 function [cfg] = expDesign(cfg, displayFigs)
+
+    % refractored by CB on 01/02/2022 for Moebius Experiment
+    
     % Creates the sequence of blocks and the events in them
     %
     % The conditions are consecutive static and motion blocks
@@ -62,16 +65,19 @@ function [cfg] = expDesign(cfg, displayFigs)
 
     fprintf('\n\nCreating design.\n\n');
 
-    [NB_BLOCKS, NB_REPETITIONS, NB_EVENTS_PER_BLOCK, MAX_TARGET_PER_BLOCK] = getInput(cfg);
-    [~, STATIC_INDEX, MOTION_INDEX] = assignConditions(cfg);
+    [NB_BLOCKS, NB_CONDITION, ~, NB_EVENTS_PER_BLOCK, MAX_TARGET_PER_BLOCK] = getInput(cfg);
+    [blockOrder, blockNames, indices] = setBlocks(cfg);
+    
+    % we have 3 repetition, and 3 possible target. So each condition in
+    % each repetition takes 1 of the possible targets
+    RANGE_TARGETS = 0:MAX_TARGET_PER_BLOCK;
 
-    RANGE_TARGETS = 1:MAX_TARGET_PER_BLOCK;
-    targetPerCondition = repmat(RANGE_TARGETS, 1, NB_REPETITIONS / MAX_TARGET_PER_BLOCK);
-
+   % shuffle the possible targets for each condition separately
     numTargetsForEachBlock = zeros(1, NB_BLOCKS);
-    numTargetsForEachBlock(STATIC_INDEX) = shuffle(targetPerCondition);
-    numTargetsForEachBlock(MOTION_INDEX) = shuffle(targetPerCondition);
-
+    for iCondition = 1:NB_CONDITION
+        numTargetsForEachBlock(indices(:,iCondition)) = shuffle(RANGE_TARGETS);
+    end
+    
     %% Give the blocks the names with condition and design the task in each event
     while 1
 
@@ -98,13 +104,14 @@ function [cfg] = expDesign(cfg, displayFigs)
             fixationTargets(iBlock, chosenPosition) = 1;
 
             % Sound targets
-            forbiddenPositions = [1, chosenPosition];
+            forbiddenPositions = [chosenPosition];
             chosenPosition = setTargetPositionInSequence( ...
                                                          NB_EVENTS_PER_BLOCK, ...
                                                          nbTarget, ...
                                                          forbiddenPositions);
 
             soundTargets(iBlock, chosenPosition) = 1;
+
 
         end
 
@@ -114,13 +121,16 @@ function [cfg] = expDesign(cfg, displayFigs)
         end
 
     end
+    
+    % I want fixation target == auditory for pilot exp - CB 01/02/2022
+    fixationTargets = soundTargets;
 
     %% Now we do the easy stuff
-    cfg.design.blockNames = assignConditions(cfg);
+    cfg.design.blockNames = blockNames;
 
     cfg.design.nbBlocks = NB_BLOCKS;
 
-    cfg = setDirections(cfg);
+    cfg.design.blockOrder = blockOrder;
 
     cfg.design.fixationTargets = fixationTargets;
 
@@ -131,69 +141,51 @@ function [cfg] = expDesign(cfg, displayFigs)
 
 end
 
-function cfg = setDirections(cfg)
+function [blockOrder, blockNames, indices] = setBlocks(cfg)
 
-    [MOTION_DIRECTIONS, STATIC_DIRECTIONS] = getDirectionBaseVectors(cfg);
 
-    [NB_BLOCKS, NB_REPETITIONS, NB_EVENTS_PER_BLOCK] = getInput(cfg);
-
-    [~, STATIC_INDEX, MOTION_INDEX] = assignConditions(cfg);
-
-    if mod(NB_EVENTS_PER_BLOCK, length(MOTION_DIRECTIONS)) ~= 0
-        error('Number of events/block not a multiple of number of motion/static direction');
+    [~, NB_CONDITION ,NB_REPETITIONS, ~] = getInput(cfg);
+    blockOrder = zeros(NB_REPETITIONS, NB_CONDITION);
+    blockNames = cell(NB_REPETITIONS * NB_CONDITION,1);
+    
+    % pseudorandomization of blocks
+    counter = 1;
+    for iRep = 1:NB_REPETITIONS
+        
+        blockOrder(iRep,:) = randperm(length(cfg.design.blockNames));
+        blockNames(counter:(iRep *NB_CONDITION)) = cfg.design.blockNames(blockOrder(iRep,:));
+        
+        counter = counter +7;
     end
+    
+    
+    % now reorganise for easy saving
+    blockOrder = reshape(blockOrder',1,[]);
+    
+    % Get the index of each condition
+    % not using transpose and
+    hand = find(blockOrder == 1);
+    feet = find(blockOrder == 2);
+    nose = find(blockOrder == 3);
+    tongue = find(blockOrder == 4);
+    lips = find(blockOrder == 5);
+    cheek = find(blockOrder == 6);
+    forehead = find(blockOrder == 7);
 
-    % initialize
-    directions = zeros(NB_BLOCKS, NB_EVENTS_PER_BLOCK);
-
-    % Create a vector for the static condition
-    NB_REPEATS_BASE_VECTOR = NB_EVENTS_PER_BLOCK / length(STATIC_DIRECTIONS);
-
-    static_directions = repmat( ...
-                               STATIC_DIRECTIONS, ...
-                               1, NB_REPEATS_BASE_VECTOR);
-
-    for iMotionBlock = 1:NB_REPETITIONS
-
-        % Set motion direction and static order
-        directions(MOTION_INDEX(iMotionBlock), :) = ...
-            repeatShuffleConditions(MOTION_DIRECTIONS, NB_REPEATS_BASE_VECTOR);
-        directions(STATIC_INDEX(iMotionBlock), :) = static_directions;
-
-    end
-
-    cfg.design.directions = directions;
+    indices = [hand', feet', nose', tongue', lips', cheek', forehead'];
 
 end
 
-function [MOTION_DIRECTIONS, STATIC_DIRECTIONS] = getDirectionBaseVectors(cfg)
 
-    % CONSTANTS
-    % Set directions for static and motion condition
-
-    MOTION_DIRECTIONS = cfg.design.motionDirections;
-    STATIC_DIRECTIONS = repmat(-1, size(MOTION_DIRECTIONS));
-
-end
-
-function [nbBlocks, nbRepet, nbEventsBlock, maxTargBlock] = getInput(cfg)
+function [nbBlocks, nbCondition, nbRepet, nbEventsBlock, maxTargBlock] = getInput(cfg)
+    nbCondition = length(cfg.design.blockNames);
     nbRepet = cfg.design.nbRepetitions;
     nbEventsBlock = cfg.design.nbEventsPerBlock;
     maxTargBlock = cfg.target.maxNbPerBlock;
-    nbBlocks = length(cfg.design.names) * nbRepet;
+    nbBlocks = length(cfg.design.blockNames) * nbRepet;
 end
 
-function [conditionNamesVector, STATIC_INDEX, MOTION_INDEX] = assignConditions(cfg)
 
-    [~, nbRepet] = getInput(cfg);
-
-    conditionNamesVector = repmat(cfg.design.names, nbRepet, 1);
-
-    % Get the index of each condition
-    STATIC_INDEX = find(strcmp(conditionNamesVector, 'static'));
-    MOTION_INDEX = find(strcmp(conditionNamesVector, 'motion'));
-
-end
 
 function diplayDesign(cfg, displayFigs)
 
@@ -205,17 +197,17 @@ function diplayDesign(cfg, displayFigs)
         figure(1);
 
         % Shows blocks (static and motion) and events (motion direction) order
-        directions = cfg.design.directions;
-        directions(directions == -1) = -90;
+        blocks = cfg.design.blockOrder;
 
         subplot(3, 1, 1);
-        imagesc(directions);
+        imagesc(blocks);
 
         labelAxesBlock();
 
-        caxis([-90 - 37, 270 + 37]);
-        myColorMap = lines(5);
+        caxis([1 7]);
+        myColorMap = lines(7);
         colormap(myColorMap);
+        colorbar();
 
         title('Block (static and motion) & Events (motion direction)');
 
@@ -237,22 +229,22 @@ function diplayDesign(cfg, displayFigs)
         labelAxesFreq();
         title('Fixation Targets position distribution');
 
-        figure(2);
-
-        [motionDirections] = getDirectionBaseVectors(cfg);
-        motionDirections = unique(motionDirections);
-
-        for iMotion = 1:length(motionDirections)
-
-            [~, position] = find(directions == motionDirections(iMotion));
-
-            subplot(2, 2, iMotion);
-            hist(position);
-            scaleAxes();
-            labelAxesFreq();
-            title(num2str(motionDirections(iMotion)));
-
-        end
+%         figure(2);
+% 
+%         [motionDirections] = getDirectionBaseVectors(cfg);
+%         motionDirections = unique(motionDirections);
+% 
+%         for iMotion = 1:length(motionDirections)
+% 
+%             [~, position] = find(directions == motionDirections(iMotion));
+% 
+%             subplot(2, 2, iMotion);
+%             hist(position);
+%             scaleAxes();
+%             labelAxesFreq();
+%             title(num2str(motionDirections(iMotion)));
+% 
+%         end
 
     end
 
@@ -270,7 +262,7 @@ function labelAxesFreq()
     xlabel('Events', 'Fontsize', 8);
 end
 
-function scaleAxes()
-    xlim([1 12]);
-    ylim([0 5]);
-end
+% function scaleAxes()
+%     xlim([1 12]);
+%     ylim([0 5]);
+% end

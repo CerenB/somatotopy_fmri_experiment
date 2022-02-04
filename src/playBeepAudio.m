@@ -2,10 +2,10 @@ function onset  = playBeepAudio(cfg, thisEvent)
 
     %% Get parameters        
     soundData = cfg.soundData;
-    fieldName = NT;
+    fieldName = 'eventNoTarget';
 
     if thisEvent.soundTarget == 1
-        fieldName = [fieldName 'T'];
+        fieldName = 'eventTarget';
     end
     
     sound = soundData.(fieldName);
@@ -15,6 +15,8 @@ function onset  = playBeepAudio(cfg, thisEvent)
     PsychPortAudio('FillBuffer', cfg.audio.pahandle, sound);
     PsychPortAudio('Start', cfg.audio.pahandle);
     onset = GetSecs;
+
+    % PsychPortAudio('Start', pahandle, repetitions, startCue, waitForDeviceStart);
 
 %     
 %     %% play sequences

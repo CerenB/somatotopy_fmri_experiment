@@ -45,23 +45,33 @@ function [cfg] = setParameters()
                             'lips', 'cheek', 'forehead'};
 
     % per condition
-    cfg.design.nbBlocks = 3;
-    % per block
-    cfg.design.nbTrials = 4;
+    cfg.design.nbRepetitions = 3;
+%     % per block
+%     cfg.design.nbTrials = 4;
 
-    %% Timing
+    % we have 12s block, and we brush in every 1s
+    cfg.design.nbEventsPerBlock = 12;
+    
+    % loudness adjustment
+    cfg.amp = 0.95;
+    %% Timing - NEED CARE
+    % currently we present audio to the exp during the ISI and IBI
+    % even duration = ISI + beep duration
+    % IBI = has audio cue + silence
+    
+    % we will model 1 block in GLM, we need a block duration in logfile
 
     % IBI
     % block length = (cfg.eventDuration + cfg.ISI) * cfg.design.nbEventsPerBlock
 
-    cfg.timing.eventDuration = 2; % second
+    cfg.timing.eventDuration = 1; % second
 
     % Time between blocs in secs
     cfg.timing.IBI = 8;
     % Time between events in secs
-    cfg.timing.ISI = 2;
-    
-    cfg.timing.beepDuration = 0.25; % auditory beeps length in second
+    cfg.timing.ISI = 0.75;
+    % auditory beeps length in second
+    cfg.timing.beepDuration = 0.25; 
 
 
     %% Task(s)
@@ -72,7 +82,7 @@ function [cfg] = setParameters()
     cfg.subject.askGrpSess = [0 0];
 
     % Instruction
-    cfg.task.instruction = 'Detect slower brushes\n \n\n';
+    cfg.task.instruction = 'Detect faster brushes\n \n\n';
 
     % Fixation cross (in pixels)
     cfg.fixation.type = 'cross';
@@ -83,20 +93,26 @@ function [cfg] = setParameters()
     cfg.fixation.xDisplacement = 0;
     cfg.fixation.yDisplacement = 0;
 
-    cfg.target.maxNbPerBlock = 1;
-    cfg.target.duration = 0.1; % In secs
+    % max number of targets within a block
+    cfg.target.maxNbPerBlock = 2;
+    
+    % the experimenter will brush not in 1s but in 500ms - higher velocity
+    cfg.target.duration = 0.5;
 
     cfg.extraColumns = { ...
-                        'target', ...
+                        'soundTarget', ...
+                        'fixationTarget', ...
                         'event', ...
                         'block', ...
-                        'vis_duration', ...
-                        'vis_onset', ...
+                        'blockCueOnset', ...
+                        'blockCueOnsetEnd', ...
+                        'blockCueDuration',...
+                        'blockCueDuration2',...
                         'keyName'};
                     
     %% Auditory Stimulation
 
-    cfg.audio.channels = 2;
+    cfg.audio.channels = 1;
 end
 
 function cfg = setKeyboards(cfg)
@@ -127,7 +143,7 @@ cfg.mri.triggerNb = 1;
 
 % json sidecar file for bold data
 cfg.mri.repetitionTime = 1.75;
-cfg.bids.MRI.Instructions = 'Detect slower brushes';
+cfg.bids.MRI.Instructions = 'Detect faster brushes';
 cfg.bids.MRI.TaskDescription = [];
 cfg.bids.mri.SliceTiming = [0, 0.9051, 0.0603, 0.9655, 0.1206, 1.0258, 0.181, ...
                       1.0862, 0.2413, 1.1465, 0.3017, 1.2069, 0.362, ...
@@ -141,10 +157,12 @@ cfg.bids.mri.SliceTiming = [0, 0.9051, 0.0603, 0.9655, 0.1206, 1.0258, 0.181, ..
                       1.6896, 0.8448];
 
 %Number of seconds before the rhythmic sequence (exp) are presented
-cfg.timing.onsetDelay = 2 *cfg.mri.repetitionTime; %5.2s
+cfg.timing.onsetDelay = 4 *cfg.mri.repetitionTime; %8.75
 % Number of seconds after the end of all stimuli before ending the fmri run!
-cfg.timing.endDelay = 4 * cfg.mri.repetitionTime; %10.4s
+cfg.timing.endDelay = 5 * cfg.mri.repetitionTime; %8.75
 
+% beginning of exp, give experimenter a cue to get ready for tactile stim
+cfg.timing.audiCueOnset = cfg.timing.onsetDelay - 4.5;
 
 % ending timings for fMRI
 %end the screen after thank you screen

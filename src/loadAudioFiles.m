@@ -42,7 +42,8 @@ function [cfg] = loadAudioFiles(cfg)
     fileName = fullfile('input', 'lips.wav');
     [soundData.L, freq(9)] = audioread(fileName);
     soundData.L = soundData.L';
-
+    
+    cfg.soundData = soundData;
     
     %%
     if length(unique(freq)) > 1
@@ -51,7 +52,8 @@ function [cfg] = loadAudioFiles(cfg)
         freq = unique(freq);
     end
 
-    cfg.soundData = soundData;
     cfg.audio.fs = freq;
     
+    % make complete trial with beep sounds
+    [cfg] = makeBeepAudio(cfg);
 end

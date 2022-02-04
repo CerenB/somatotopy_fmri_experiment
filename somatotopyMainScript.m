@@ -1,5 +1,7 @@
 
 
+getOnlyPress = 1;
+
 % Clear all the previous stuff
 clc;
 if ~ismac
@@ -22,24 +24,19 @@ try
 
     %% Init the experiment
     [cfg] = initPTB(cfg);
-
     
-    % refractor 
-    % s = loadAndMakeBeepAudio(cfg)
-    %
+    % load sounds & make beep sounds for events
+    [cfg] = loadAudioFiles(cfg);
     
-    % do expDesign - pseudorandom order of blocks and targets in events
-    % expDesign.m
-    % 
-    
-    cfg = postInitializationSetup(cfg);
+    % pseudorandom order of blocks and targets in events
+    [cfg] = expDesign(cfg);
 
     % Prepare for the output logfiles with all
     logFile.extraColumns = cfg.extraColumns;
     logFile = saveEventsFile('init', cfg, logFile);
     logFile = saveEventsFile('open', cfg, logFile);
     
-    
+    % want to see cfg?
     disp(cfg);
 
     % Show experiment instruction
@@ -48,6 +45,9 @@ try
     % prepare the KbQueue to collect responses
     getResponse('init', cfg.keyboard.responseBox, cfg);
 
+    % Wait for Trigger from Scanner
+    waitForTrigger(cfg);
+    
     %% Experiment Start
 
     cfg = getExperimentStart(cfg);
@@ -58,29 +58,33 @@ try
 
     for iBlock = 1:cfg.design.nbBlocks
 
-        waitFor(cfg, cfg.timing.onsetDelay);
-
+        fprintf('\n - Running block %s \n', cfg.design.blockNames{iBlock}); 
+        
         % experimenter's cue to know where to stimulate
-        cueOnset = playCueAudio(cfg, thisBlock);
+        [thisBlock]  = playCueAudio(cfg, iBlock);
+        % % % we might need certain wait period here
+        % % % after playCue, wait the rest
+        
+        waitFor(cfg, cfg.timing.onsetDelay);
     
-        for iTrial = 1:cfg.design.nbTrials
+        for iEvent = 1:cfg.design.nbEventsPerBlock
 
-            fprintf('\n - Running trial %.0f \n', iTrial);
+            fprintf('\n - Running trial %.0f \n', iEvent);
 
             % Check for experiment abortion from operator
             checkAbort(cfg, cfg.keyboard.keyboard);
 
-            [thisEvent, thisFixation, cfg] = preTrialSetup(cfg, iBlock, iTrial);
+            [thisEvent, thisFixation, cfg] = preTrialSetup(cfg, iBlock, thisBlock, iEvent);
 
 
             % play the sounds and collect onset and duration of the event
-            [onset, duration] = doAuditoryMotion(cfg, thisEvent);
+            [onset, duration] = doAudioVisual(cfg, thisEvent, thisFixation);
             
             
             thisEvent = preSaveSetup( ...
                                      thisEvent, ...
                                      iBlock, ...
-                                     iTrial, ...
+                                     iEvent, ...
                                      duration, onset, ...
                                      cfg, ...
                                      logFile);
@@ -89,13 +93,16 @@ try
 
             % collect the responses and appends to the event structure for
             % saving in the tsv file
-            responseEvents = getResponse('check', cfg.keyboard.responseBox, cfg);
-            
-            responseEvents(1).isStim = logFile.isStim;
-            responseEvents(1).fileID = logFile.fileID;
-            responseEvents(1).extraColumns = logFile.extraColumns;
-            saveEventsFile('save', cfg, responseEvents);
+%             responseEvents = getResponse('check', cfg.keyboard.responseBox, ...
+%                                          cfg, getOnlyPress);
+%             
+%             responseEvents(1).isStim = logFile.isStim;
+%             responseEvents(1).fileID = logFile.fileID;
+%             responseEvents(1).extraColumns = logFile.extraColumns;
+%             saveEventsFile('save', cfg, responseEvents);
 
+            responseEvents = getResponse('check', cfg.keyboard.responseBox, cfg);
+            collectAndSave(responseEvents, cfg, logFile, cfg.experimentStart);
 
             waitFor(cfg, cfg.timing.ISI);
 
