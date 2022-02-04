@@ -29,8 +29,9 @@ function [thisBlock]  = playCueAudio(cfg, iBlock)
     % it will play the name of the block and wait till rest of the gap
     % Start the sound presentation
     PsychPortAudio('FillBuffer', cfg.audio.pahandle, sound);
-    PsychPortAudio('Start', cfg.audio.pahandle);
+    PsychPortAudio('Start', cfg.audio.pahandle,cfg.audio.cueRepeat);
                 
+%     startTime = PsychPortAudio('Start', pahandle [, repetitions=1] [, when=0] [, waitForStart=0] [, stopTime=inf] [, resume=0]);
 %                     PsychPortAudio('FillBuffer', cfg.audio.pahandle, sound);
 %     PsychPortAudio('Start', cfg.audio.pahandle, [], ...
 %                     cfg.experimentStart + cfg.timing.audiCueOnset,1);
