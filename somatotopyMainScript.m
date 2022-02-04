@@ -54,8 +54,9 @@ try
 
     getResponse('start', cfg.keyboard.responseBox);
 
-    % baseline wait with fixation cross while fMRI is ON
-    waitFor(cfg, cfg.timing.onsetDelay);
+    % after this wait time, exp hears the audio cue for which body part to
+    % brush
+    waitFor(cfg, cfg.timing.experimenterCueOnsetDelay);
      
     %% For Each Block
 
@@ -65,9 +66,16 @@ try
         
         % experimenter's cue to know where to stimulate
         [thisBlock]  = playCueAudio(cfg, iBlock);
-        % % % we might need certain wait period here
-        % % % after playCue, wait the rest
-    
+
+        if iBlock == 1
+            % wait time after auditory cue for beginning of exp
+            waitFor(cfg, cfg.timing.afterCueOnsetDelay - thisBlock.cueDuration);
+        else
+            % wait time in between 2 blocks
+            % IBI - the audio cue playing tme (1s)
+            waitFor(cfg, cfg.timing.IBI - thisBlock.cueDuration);
+        end
+        
         for iEvent = 1:cfg.design.nbEventsPerBlock
 
             fprintf('\n - Running trial %.0f \n', iEvent);
@@ -95,12 +103,9 @@ try
             responseEvents = getResponse('check', cfg.keyboard.responseBox, cfg);
             collectAndSave(responseEvents, cfg, logFile, cfg.experimentStart);
 
-            waitFor(cfg, cfg.timing.ISI);
+%            waitFor(cfg, cfg.timing.ISI);
 
         end
-        
-        % wait time in between 2 blocks
-        waitFor(cfg, cfg.timing.IBI);
         
     end
 
