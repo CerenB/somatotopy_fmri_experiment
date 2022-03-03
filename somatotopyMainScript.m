@@ -62,7 +62,7 @@ try
 
     for iBlock = 1:cfg.design.nbBlocks
 
-        fprintf('\n - Running block %s \n', cfg.design.blockNames{iBlock}); 
+        fprintf('\n - Running block %s \n', cfg.design.blockNamesOrder{iBlock}); 
         
         % experimenter's cue to know where to stimulate
         [thisBlock]  = playCueAudio(cfg, iBlock);
@@ -120,13 +120,18 @@ try
     getResponse('stop', cfg.keyboard.responseBox);
     getResponse('release', cfg.keyboard.responseBox);
 
-    createJson(cfg, cfg);
+    % createJson(cfg, cfg);
+    % think about the below
+    createJson(cfg, 'func');
 
     farewellScreen(cfg);
 
     cleanUp();
 
 catch
+    
+    % think about adding save option if it crashes
+    % ?
 
     cleanUp();
     psychrethrow(psychlasterror);

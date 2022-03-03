@@ -18,7 +18,7 @@ function [cfg] = setParameters()
 
     cfg.debug.do = false; % To test the script out of the scanner, skip PTB sync
     cfg.debug.smallWin = false; % To test on a part of the screen, change to 1
-    cfg.debug.transpWin = true; % To test with trasparent full size screen
+    cfg.debug.transpWin = false; % To test with trasparent full size screen
 
     cfg.verbose = 1;
 
@@ -41,11 +41,14 @@ function [cfg] = setParameters()
 
     %% Experiment Design
 
-    cfg.design.blockNames = {'hand','feet', 'nose', 'tongue', ...
-                            'lips', 'cheek', 'forehead'};
+    cfg.design.blockNames = {'hand','feet','lips'}; 
+%     cfg.design.blockNames = {'hand','feet','nose', 'tongue', ...
+%                             'lips', 'cheek', 'forehead'}; 
+% order is important fur playing cues
+% NEW ORDER [1:7] is hand, feet, lips, tongue, nose, cheek, forehead
 
     % per condition
-    cfg.design.nbRepetitions = 3;
+    cfg.design.nbRepetitions = 7; % main exp with 7 condition, repetition = 3;
 
     % we have 12s block, and we brush in every 1s
     cfg.design.nbEventsPerBlock = 12;
@@ -68,12 +71,10 @@ function [cfg] = setParameters()
     cfg.timing.IBI = 8;
 %     % Time between events in secs
 %     cfg.timing.ISI = 0.25;
+
     % auditory beeps length in second
     cfg.timing.beepDuration = 0.25; 
 
-
-    % alternative - with more beeps within 1 s
-    
     %% Task(s)
 
     % task name 
@@ -118,6 +119,10 @@ function [cfg] = setParameters()
     % repeat body part audio cues twice
     cfg.audio.cueRepeat = 2;
     
+    % more often beeps?
+    % alternative - with more beeps within 1 s
+    cfg.audio.moreBeeps = 0;
+    
 end
 
 function cfg = setKeyboards(cfg)
@@ -147,7 +152,7 @@ cfg.mri.triggerKey = 's';
 cfg.mri.triggerNb = 1; 
 
 % json sidecar file for bold data
-cfg.mri.repetitionTime = 1.75;
+cfg.mri.repetitionTime = 1.9;
 cfg.bids.MRI.Instructions = 'Detect faster brushes';
 cfg.bids.MRI.TaskDescription = [];
 cfg.bids.mri.SliceTiming = [0, 0.9051, 0.0603, 0.9655, 0.1206, 1.0258, 0.181, ...
@@ -187,8 +192,8 @@ end
 function cfg = setMonitor(cfg)
 
 % Text format 
-cfg.text.font         = 'Arial'; %'Courier New'
-cfg.text.size         = 48; %18
+cfg.text.font         = 'Arial';
+cfg.text.size         = 48;
 
 
 % Monitor parameters for PTB

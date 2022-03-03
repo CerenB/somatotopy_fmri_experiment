@@ -6,6 +6,7 @@ function [thisBlock]  = playCueAudio(cfg, iBlock)
     % set block name
     block = cfg.design.blockOrder(iBlock);
     % ORDER [1:7] is hand, feet, nose, tongue, lips, cheek, forehead
+    % NEW ORDER [1:7] is hand, feet, lips, tongue, nose, cheek, forehead
 
     switch block
         case 1
@@ -13,11 +14,11 @@ function [thisBlock]  = playCueAudio(cfg, iBlock)
         case 2
             fieldName = 'Fe';
         case 3
-            fieldName = 'N';
+            fieldName = 'L';
         case 4
             fieldName = 'To';
         case 5
-            fieldName = 'L';
+            fieldName = 'N';
         case 6
             fieldName = 'C';
         case 7

@@ -8,7 +8,7 @@ function varargout = preTrialSetup(varargin)
     [cfg, iBlock, thisBlock, iEvent] = deal(varargin{:});
 
     % set block name and targets
-    thisEvent.trial_type = cfg.design.blockNames{iBlock};
+    thisEvent.trial_type = cfg.design.blockNamesOrder{iBlock};
     thisEvent.blockNb = cfg.design.blockOrder(iBlock);
 
     % save block info into thisEvent structure
@@ -19,7 +19,7 @@ function varargout = preTrialSetup(varargin)
     
     % think about calculating duration properly
     if mod(iEvent,12) == 1
-        thisEvent.trial_type = ['block_', cfg.design.blockNames{iBlock}];
+        thisEvent.trial_type = ['block_', cfg.design.blockNamesOrder{iBlock}];
 %         thisEvent.duration = 12;
     end
     

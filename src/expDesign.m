@@ -65,17 +65,34 @@ function [cfg] = expDesign(cfg, displayFigs)
 
     fprintf('\n\nCreating design.\n\n');
 
-    [NB_BLOCKS, NB_CONDITION, ~, NB_EVENTS_PER_BLOCK, MAX_TARGET_PER_BLOCK] = getInput(cfg);
+    [NB_BLOCKS, NB_CONDITION, NB_REPET, NB_EVENTS_PER_BLOCK, MAX_TARGET_PER_BLOCK] = getInput(cfg);
     [blockOrder, blockNames, indices] = setBlocks(cfg);
     
     % we have 3 repetition, and 3 possible target. So each condition in
     % each repetition takes 1 of the possible targets
     RANGE_TARGETS = 0:MAX_TARGET_PER_BLOCK;
-
-   % shuffle the possible targets for each condition separately
+    rangeTargetArray = RANGE_TARGETS;
+    
+    % if repetitionNb is more than your range of targets
+    % we need to expand array of "range of targets"
+    if length(RANGE_TARGETS) < NB_REPET
+        %how much enlargement needed?
+        if mod(NB_REPET,length(RANGE_TARGETS)) == 0
+            rangeTargetArray = repmat(rangeTargetArray, 1, NB_REPET/length(RANGE_TARGETS));
+        else
+            % round it to smallest integer
+            rangeTargetArray = repmat(rangeTargetArray, 1, round(NB_REPET/length(RANGE_TARGETS)));
+            % then add "1" target at the end
+            rangeTargetArray = [rangeTargetArray, 1];
+        end
+    end
+    
+    % shuffle the possible targets for each condition separately
     numTargetsForEachBlock = zeros(1, NB_BLOCKS);
+    % indices contain position info; every column indicates a specific
+    % condition (indices(:,1) = condition1, indices(:,2) = condition2...)
     for iCondition = 1:NB_CONDITION
-        numTargetsForEachBlock(indices(:,iCondition)) = shuffle(RANGE_TARGETS);
+        numTargetsForEachBlock(indices(:,iCondition)) = shuffle(rangeTargetArray);
     end
     
     %% Give the blocks the names with condition and design the task in each event
@@ -104,7 +121,7 @@ function [cfg] = expDesign(cfg, displayFigs)
             fixationTargets(iBlock, chosenPosition) = 1;
 
             % Sound targets
-            forbiddenPositions = [chosenPosition];
+            forbiddenPositions = [1, NB_EVENTS_PER_BLOCK];
             chosenPosition = setTargetPositionInSequence( ...
                                                          NB_EVENTS_PER_BLOCK, ...
                                                          nbTarget, ...
@@ -126,7 +143,7 @@ function [cfg] = expDesign(cfg, displayFigs)
     fixationTargets = soundTargets;
 
     %% Now we do the easy stuff
-    cfg.design.blockNames = blockNames;
+    cfg.design.blockNamesOrder = blockNames;
 
     cfg.design.nbBlocks = NB_BLOCKS;
 
@@ -155,7 +172,7 @@ function [blockOrder, blockNames, indices] = setBlocks(cfg)
         blockOrder(iRep,:) = randperm(length(cfg.design.blockNames));
         blockNames(counter:(iRep *NB_CONDITION)) = cfg.design.blockNames(blockOrder(iRep,:));
         
-        counter = counter +7;
+        counter = counter + NB_CONDITION;
     end
     
     
