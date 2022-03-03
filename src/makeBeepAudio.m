@@ -33,7 +33,7 @@ eventDuration = cfg.timing.eventDuration;
 % make time vector
 t = [0 : round(eventDuration * fs)-1] / fs; 
 
-% preallocate
+% preallocate to silence/zeros as default
 eventNoTarget = zeros(1,length(t));
 eventTarget = eventNoTarget;
 
@@ -60,10 +60,13 @@ if cfg.audio.moreBeeps
     idxEnd4 = 7 * length(soundTarget);
     
     % target insert
-    eventTarget(1:length(soundTarget)) = soundTarget; % 1st beep
-    eventTarget(idxStart2:idxEnd2) = soundTarget;
-    eventTarget(idxStart3:idxEnd3) = soundTarget;
-    eventTarget(idxStart4:idxEnd4) = soundTarget;
+    if ~cfg.audio.silentTask
+        
+        eventTarget(1:length(soundTarget)) = soundTarget; % 1st beep
+        eventTarget(idxStart2:idxEnd2) = soundTarget;
+        eventTarget(idxStart3:idxEnd3) = soundTarget;
+        eventTarget(idxStart4:idxEnd4) = soundTarget;
+    end
     
 else
 
@@ -75,8 +78,10 @@ else
     idxEnd = 3 * length(soundTarget);
     
     % insert target sounds
-    eventTarget(1:length(soundTarget)) = soundTarget;
-    eventTarget(idxStart:idxEnd) = soundTarget;
+    if ~cfg.audio.silentTask
+        eventTarget(1:length(soundTarget)) = soundTarget;
+        eventTarget(idxStart:idxEnd) = soundTarget;
+    end
     
 end
     
@@ -87,6 +92,12 @@ eventTarget = eventTarget.*amplitude;
 % save them
 cfg.soundData.eventTarget = eventTarget;
 cfg.soundData.eventNoTarget = eventNoTarget;
+
+% easy fix for now - 
+% omitting the target = going to passive 
+if cfg.audio.noTask
+    cfg.soundData.eventTarget = eventNoTarget;
+end
 
 % % to visualise 1 pattern
 % figure; plot(t,eventTarget);

@@ -142,6 +142,11 @@ function [cfg] = expDesign(cfg, displayFigs)
     % I want fixation target == auditory for pilot exp - CB 01/02/2022
     fixationTargets = soundTargets;
 
+    % quick fix - for noTask - no fixation or audio task input
+    if cfg.audio.noTask
+       fixationTargets = zeros(NB_BLOCKS, NB_EVENTS_PER_BLOCK);
+       soundTargets = zeros(NB_BLOCKS, NB_EVENTS_PER_BLOCK); 
+    end
     %% Now we do the easy stuff
     cfg.design.blockNamesOrder = blockNames;
 
