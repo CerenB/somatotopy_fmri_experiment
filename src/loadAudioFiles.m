@@ -5,10 +5,16 @@ function [cfg] = loadAudioFiles(cfg)
     freq = [];
     
     %load auditory beep sounds
+    % target sound
     fileName = fullfile('input', '700Hz_250ms.wav');
+    if cfg.audio.moreBeeps
+        fileName = fullfile('input', '554Hz_125ms.wav');
+    end
+    
     [soundData.T, freq(1)] = audioread(fileName);
     soundData.T = soundData.T';
-    
+
+    % non-target sound
     fileName = fullfile('input', '350Hz_250ms.wav');
     [soundData.NT, freq(2)] = audioread(fileName);
     soundData.NT = soundData.NT';

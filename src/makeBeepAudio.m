@@ -30,22 +30,61 @@ soundTarget = cfg.soundData.T(1,:);
 % whole length of trial/event
 eventDuration = cfg.timing.eventDuration;
    
-
+% make time vector
 t = [0 : round(eventDuration * fs)-1] / fs; 
+
+% preallocate
 eventNoTarget = zeros(1,length(t));
 eventTarget = eventNoTarget;
-idxStart = length(soundTarget)+ 1 + length(soundTarget);
-idxEnd = 3 * length(soundTarget);
 
 
-%insert sound event
-eventNoTarget(1:length(soundNoTarget)) = soundNoTarget;
+if cfg.audio.moreBeeps
+    
+    % no target
+     % define where to insert the sounds
+    idxStart = length(soundNoTarget)+ 1 + length(soundNoTarget);
+    idxEnd = 3 * length(soundNoTarget);
+    
+    %insert sound event
+    eventNoTarget(1:length(soundNoTarget)) = soundNoTarget;
+    eventNoTarget(idxStart:idxEnd) = soundNoTarget;
+    
+    % target places/indices
+    idxStart2 = length(soundTarget)+ 1 + length(soundTarget);
+    idxEnd2 = 3 * length(soundTarget);
+    
+    idxStart3 = idxEnd2 + length(soundTarget)+ 1 ;
+    idxEnd3 = 5 * length(soundTarget);
+    
+    idxStart4 = idxEnd3 + length(soundTarget)+ 1 ;
+    idxEnd4 = 7 * length(soundTarget);
+    
+    % target insert
+    eventTarget(1:length(soundTarget)) = soundTarget; % 1st beep
+    eventTarget(idxStart2:idxEnd2) = soundTarget;
+    eventTarget(idxStart3:idxEnd3) = soundTarget;
+    eventTarget(idxStart4:idxEnd4) = soundTarget;
+    
+else
+
+    %insert no-target sound event
+    eventNoTarget(1:length(soundNoTarget)) = soundNoTarget;
+
+    % define where to insert the sounds
+    idxStart = length(soundTarget)+ 1 + length(soundTarget);
+    idxEnd = 3 * length(soundTarget);
+    
+    % insert target sounds
+    eventTarget(1:length(soundTarget)) = soundTarget;
+    eventTarget(idxStart:idxEnd) = soundTarget;
+    
+end
+    
+% arrange the almplitude
 eventNoTarget = eventNoTarget.*amplitude;
-
-eventTarget(1:length(soundTarget)) = soundTarget;
-eventTarget(idxStart:idxEnd) = soundTarget;
 eventTarget = eventTarget.*amplitude;
 
+% save them
 cfg.soundData.eventTarget = eventTarget;
 cfg.soundData.eventNoTarget = eventNoTarget;
 
