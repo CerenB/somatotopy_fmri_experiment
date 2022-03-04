@@ -1,7 +1,4 @@
 
-
-getOnlyPress = 1;
-
 % Clear all the previous stuff
 clc;
 if ~ismac
@@ -73,7 +70,7 @@ try
         else
             % wait time in between 2 blocks
             % IBI - the audio cue playing tme (1s)
-            waitFor(cfg, cfg.timing.IBI - thisBlock.cueDuration);
+            waitFor(cfg, cfg.timing.IBI(iBlock) - thisBlock.cueDuration);
         end
         
         for iEvent = 1:cfg.design.nbEventsPerBlock

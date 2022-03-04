@@ -67,13 +67,16 @@ function [cfg] = setParameters()
     
     % we will model 1 block in GLM, we need a block duration in logfile
 
-    % IBI
-    % block length = (cfg.eventDuration + cfg.ISI) * cfg.design.nbEventsPerBlock
 
     cfg.timing.eventDuration = 1; % second
 
-    % Time between blocs in secs
+    % Time between blocs in secs, here set as default
     cfg.timing.IBI = 8;
+    
+    % jitter do = makes an array contains for each block with jittered IBI
+    % jitter do not = an array with constant IBI 
+    cfg.timing.doJitter = 1;
+
 %     % Time between events in secs
 %     cfg.timing.ISI = 0.25;
 

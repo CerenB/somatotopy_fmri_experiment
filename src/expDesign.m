@@ -147,7 +147,21 @@ function [cfg] = expDesign(cfg, displayFigs)
        fixationTargets = zeros(NB_BLOCKS, NB_EVENTS_PER_BLOCK);
        soundTargets = zeros(NB_BLOCKS, NB_EVENTS_PER_BLOCK); 
     end
+    
+    %%  set jitter 
+    %calculate an array of jittered IBI   
+    ibi = cfg.timing.IBI;
+    ibiArray = [ibi-1:ibi+1];
+    
+    if cfg.timing.doJitter
+        allIBI = repmat(ibiArray, 1,round(NB_BLOCKS/length(ibiArray)));
+        cfg.timing.IBI = allIBI;
+    else
+        allIBI = repmat(ibi,1,NB_BLOCKS);
+        cfg.timing.IBI = allIBI;
+    end
     %% Now we do the easy stuff
+    
     cfg.design.blockNamesOrder = blockNames;
 
     cfg.design.nbBlocks = NB_BLOCKS;
