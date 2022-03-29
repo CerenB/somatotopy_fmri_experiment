@@ -26,7 +26,7 @@ function [cfg] = setParameters()
     
     %% TASK - quick fix for now
     % brutally saying no target - no task?
-    cfg.audio.noTask = 0;
+    cfg.audio.noTask = 1;
     
     %% Engine parameters
 
@@ -46,14 +46,14 @@ function [cfg] = setParameters()
 
     %% Experiment Design
 
-    cfg.design.blockNames = {'hand','feet','lips'}; 
+    cfg.design.blockNames = {'hand','feet'}; 
 %     cfg.design.blockNames = {'hand','feet','nose', 'tongue', ...
 %                             'lips', 'cheek', 'forehead'}; 
 % order is important fur playing cues
 % NEW ORDER [1:7] is hand, feet, lips, tongue, nose, cheek, forehead
 
     % per condition
-    cfg.design.nbRepetitions = 7; % main exp with 7 condition, repetition = 3;
+    cfg.design.nbRepetitions = 6; % main exp with 7 condition, repetition = 3;
 
     % we have 12s block, and we brush in every 1s
     cfg.design.nbEventsPerBlock = 12;
@@ -185,7 +185,7 @@ cfg.bids.mri.SliceTiming = [0, 0.9051, 0.0603, 0.9655, 0.1206, 1.0258, 0.181, ..
                       1.5086, 0.6638, 1.5689, 0.7241, 1.6293, 0.7844, ...
                       1.6896, 0.8448];
 
-%Number of seconds before the rhythmic sequence (exp) are presented
+%Number of seconds before the trial/blocks(exp) starts
 cfg.timing.onsetDelay = 4 *cfg.mri.repetitionTime; %7
 % Number of seconds after the end of all stimuli before ending the fmri run!
 cfg.timing.endDelay = 5 * cfg.mri.repetitionTime; %8.75
