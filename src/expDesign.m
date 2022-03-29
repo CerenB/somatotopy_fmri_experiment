@@ -76,14 +76,19 @@ function [cfg] = expDesign(cfg, displayFigs)
     % if repetitionNb is more than your range of targets
     % we need to expand array of "range of targets"
     if length(RANGE_TARGETS) < NB_REPET
+        
+        rangeTargetArray = repmat(rangeTargetArray, 1, round(NB_REPET/length(RANGE_TARGETS)));
+        
         %how much enlargement needed?
-        if mod(NB_REPET,length(RANGE_TARGETS)) == 0
-            rangeTargetArray = repmat(rangeTargetArray, 1, NB_REPET/length(RANGE_TARGETS));
-        else
-            % round it to smallest integer
-            rangeTargetArray = repmat(rangeTargetArray, 1, round(NB_REPET/length(RANGE_TARGETS)));
+        if mod(NB_REPET,length(RANGE_TARGETS)) == 1
             % then add "1" target at the end
             rangeTargetArray = [rangeTargetArray, 1];
+            
+        elseif mod(NB_REPET,length(RANGE_TARGETS)) == 2
+            % then remove "1" target from the target array
+            idx = find(rangeTargetArray ==1); 
+            rangeTargetArray(idx(1)) = [];
+
         end
     end
     
