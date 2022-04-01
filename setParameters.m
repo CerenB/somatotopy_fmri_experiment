@@ -2,8 +2,6 @@
 
 function [cfg] = setParameters()
 
-    % Template PTB experiment
-
     % Initialize the parameters and general configuration variables
     cfg = struct();
 
@@ -16,15 +14,15 @@ function [cfg] = setParameters()
 
     %% Debug mode settings
 
-    cfg.debug.do = true; % To test the script out of the scanner, skip PTB sync
+    cfg.debug.do = false; % To test the script out of the scanner, skip PTB sync
     cfg.debug.smallWin = false; % To test on a part of the screen, change to 1
-    cfg.debug.transpWin = true; % To test with trasparent full size screen
+    cfg.debug.transpWin = false; % To test with trasparent full size screen
 
     cfg.verbose = 1;
 
     cfg.skipSyncTests = 1; % 0 
     
-    %% TASK - quick fix for now
+    %% TASK - quick fix
     % brutally saying no target - no task?
     cfg.audio.noTask = 1;
     
@@ -59,7 +57,7 @@ function [cfg] = setParameters()
     % loudness adjustment
     cfg.amp = 0.99;
     %% Timing - NEED CARE
-    % we present cue audio to experimenter and subject during the gap period
+    % present cue audio to experimenter and subject during the gap period
     % event duration = metronome beep duration
     % IBI = has audio cue + silence
     % we will model 1 block in GLM, we need a block duration in logfile
@@ -118,7 +116,7 @@ function [cfg] = setParameters()
                     
     %% Auditory Stimulation
     
-    cfg.audio.doSplitHeadphone = 0;
+    cfg.audio.doSplitHeadphone = 1;
     if cfg.audio.doSplitHeadphone 
         cfg.extraColumns = { ...
                         'soundTarget', ...
@@ -148,6 +146,10 @@ function [cfg] = setParameters()
     % silent task? so no frequency beeps, but silence during block
     cfg.audio.silentTask = 1;
     
+    % visual or audio cue for the experimenter?
+    % they wait each other, so it won't be simultenaous audio-vis presentation
+    cfg.doVisualCue = 1;
+    cfg.doAudioCue = 0;
 end
 
 function cfg = setKeyboards(cfg)
@@ -208,7 +210,7 @@ cfg.timing.afterCueOnsetDelay = cfg.timing.onsetDelay - cfg.timing.experimenterC
 % 3s before the stimulation block, subject hears a cue
 cfg.timing.subjectCueOnset = 3; 
 
-
+cfg.timing.visualCueDuration = 2;
 end
 
 

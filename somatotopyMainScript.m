@@ -61,8 +61,16 @@ try
 
         fprintf('\n - Running block %s \n', cfg.design.blockNamesOrder{iBlock}); 
         
-        % experimenter's cue to know where to stimulate
-        [thisBlock]  = playCueAudio(cfg, iBlock);
+        if cfg.doAudioCue
+           % experimenter's cue to know where to stimulate
+            [thisBlock]  = playCueAudio(cfg, iBlock);
+        end
+        
+        if cfg.doVisualCue
+            %experimenter's visual cue to where where to move
+            [thisBlock]  = bodyPartInfoScreen(cfg, cfg.design.blockNamesOrder{iBlock});
+        end
+        
 
         if iBlock == 1
             % play subject's cue
@@ -127,18 +135,20 @@ try
     getResponse('stop', cfg.keyboard.responseBox);
     getResponse('release', cfg.keyboard.responseBox);
 
-    % createJson(cfg, cfg);
-    % think about the below
+    % save bold.json
     createJson(cfg, 'func');
 
+    % save config info
+    saveCfg(cfg);
+    
     farewellScreen(cfg);
 
     cleanUp();
 
 catch
     
-    % think about adding save option if it crashes
-    % ?
+    % save config info
+    saveCfg(cfg);
 
     cleanUp();
     psychrethrow(psychlasterror);
