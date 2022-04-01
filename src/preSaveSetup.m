@@ -3,7 +3,7 @@
 function varargout = preSaveSetup(varargin)
     % varargout = postInitializatinSetup(varargin)
 
-    % generic function to prepare structures before saving
+    % prepare structures before saving
 
     [thisEvent, iBlock, iEvent, duration, onset, cfg, logFile] = ...
         deal(varargin{:});

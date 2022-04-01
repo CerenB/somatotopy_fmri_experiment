@@ -69,7 +69,6 @@ function [cfg] = setParameters()
     % Time between blocs in secs, here set as default
     cfg.timing.IBI = 8;
     
-    % % % WIP % % % 
     % jitter do = makes an array contains for each block with jittered IBI
     % jitter do not = an array with constant IBI 
     cfg.timing.doJitter = 1;

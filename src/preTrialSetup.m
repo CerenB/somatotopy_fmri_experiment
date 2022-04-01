@@ -3,7 +3,7 @@
 function varargout = preTrialSetup(varargin)
     % varargout = postInitializatinSetup(varargin)
 
-    % generic function to prepare some structure before each trial
+    % prepare some structure before each trial
 
     [cfg, iBlock, thisBlock, iEvent] = deal(varargin{:});
 
