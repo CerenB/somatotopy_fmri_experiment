@@ -113,11 +113,7 @@ try
 
             responseEvents = getResponse('check', cfg.keyboard.responseBox, cfg);
             collectAndSave(responseEvents, cfg, logFile, cfg.experimentStart);
-
-%            waitFor(cfg, cfg.timing.ISI);
-
-        end
-        
+        end     
     end
 
     % End of the run for the BOLD to go down

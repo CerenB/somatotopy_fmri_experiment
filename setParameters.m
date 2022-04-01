@@ -45,13 +45,13 @@ function [cfg] = setParameters()
     cfg.pacedByTriggers.do = false;
 
     %% Experiment Design
-
-    cfg.design.blockNames = {'hand','feet', 'lips', 'tongue', 'forehead'}; 
+    
     % order is important for playing cues
+    cfg.design.blockNames = {'hand','feet', 'lips', 'tongue', 'forehead'}; 
     % NEW ORDER [1:7] is hand, feet, lips, tongue, forehead
 
     % per condition
-    cfg.design.nbRepetitions = 7; % main exp with 7 condition, repetition = 3;
+    cfg.design.nbRepetitions = 4; % main exp with 7 condition, repetition = 3;
 
     % we have 12s block, and we brush in every 1s
     cfg.design.nbEventsPerBlock = 12;
@@ -59,24 +59,20 @@ function [cfg] = setParameters()
     % loudness adjustment
     cfg.amp = 0.99;
     %% Timing - NEED CARE
-    % currently we present audio to the exp during the ISI and IBI
-    % even duration = ISI + beep duration
+    % we present cue audio to experimenter and subject during the gap period
+    % event duration = metronome beep duration
     % IBI = has audio cue + silence
-    
     % we will model 1 block in GLM, we need a block duration in logfile
-
 
     cfg.timing.eventDuration = 1; % second
 
     % Time between blocs in secs, here set as default
     cfg.timing.IBI = 8;
     
+    % % % WIP % % % 
     % jitter do = makes an array contains for each block with jittered IBI
     % jitter do not = an array with constant IBI 
     cfg.timing.doJitter = 1;
-
-%     % Time between events in secs
-%     cfg.timing.ISI = 0.25;
 
     % auditory beeps length in second
     cfg.timing.beepDuration = 0.25; 
@@ -85,7 +81,7 @@ function [cfg] = setParameters()
 
     % task name 
     cfg.task.name = 'somatotopy';
-     % it won't ask you about group or session
+    % it won't ask you about group or session
     cfg.subject.askGrpSess = [0 0];
 
     % Instruction
@@ -122,11 +118,8 @@ function [cfg] = setParameters()
                         'keyName'};
                     
     %% Auditory Stimulation
-
-    cfg.audio.channels = 2;
     
     cfg.audio.doSplitHeadphone = 0;
-    
     if cfg.audio.doSplitHeadphone 
         cfg.extraColumns = { ...
                         'soundTarget', ...
@@ -143,6 +136,8 @@ function [cfg] = setParameters()
                         'subCueDuration2',...
                         'keyName'}; 
     end
+    
+    cfg.audio.channels = 2;
     
     % repeat body part audio cues twice
     cfg.audio.cueRepeat = 2;
@@ -187,7 +182,7 @@ cfg.mri.repetitionTime = 1.75;
 
 cfg.bids.MRI.Instructions = 'Counting no-brush trials';
 if cfg.audio.noTask
-    cfg.bids.MRI.Instructions = 'Passively paying attention thr stimuli';
+    cfg.bids.MRI.Instructions = 'Passively paying attention the stimuli';
 end
 
 cfg.bids.MRI.TaskDescription = [];
