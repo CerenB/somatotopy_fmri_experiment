@@ -8,11 +8,11 @@ function onset  = playBeepAudio(cfg, thisEvent)
         fieldName = 'eventTarget';
     end
     
-    sound = soundData.(fieldName);
-
+    soundCh1 = soundData.(fieldName);
+    soundCh2 = soundCh1;
     
     % Start the sound presentation
-    PsychPortAudio('FillBuffer', cfg.audio.pahandle, sound);
+    PsychPortAudio('FillBuffer', cfg.audio.pahandle, [soundCh1; soundCh2]);
     PsychPortAudio('Start', cfg.audio.pahandle);
     onset = GetSecs;
 

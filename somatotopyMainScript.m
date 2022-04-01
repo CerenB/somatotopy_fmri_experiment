@@ -65,12 +65,26 @@ try
         [thisBlock]  = playCueAudio(cfg, iBlock);
 
         if iBlock == 1
+            % play subject's cue
+            % 2s cue hear it and then wait 1s then start stimulation
+            if cfg.audio.doSplitHeadphone
+                [thisBlock]  = playSubjectCueAudio(cfg, iBlock, thisBlock);
+                waitFor(cfg, cfg.timing.subjectCueOnset - thisBlock.cueSubDuration); 
             % wait time after auditory cue for beginning of exp
-            waitFor(cfg, cfg.timing.afterCueOnsetDelay - thisBlock.cueDuration);
+            else
+                waitFor(cfg, cfg.timing.afterCueOnsetDelay - thisBlock.cueDuration);
+            end
         else
-            % wait time in between 2 blocks
-            % IBI - the audio cue playing tme (1s)
-            waitFor(cfg, cfg.timing.IBI(iBlock) - thisBlock.cueDuration);
+            if cfg.audio.doSplitHeadphone
+               waitFor(cfg, cfg.timing.IBI(iBlock) - thisBlock.cueDuration...
+                            - cfg.timing.subjectCueOnset); 
+               [thisBlock]  = playSubjectCueAudio(cfg, iBlock, thisBlock);
+               waitFor(cfg, cfg.timing.subjectCueOnset - thisBlock.cueSubDuration); 
+            else
+                % wait time in between 2 blocks
+                % IBI - the audio cue playing tme (1s x 2)
+                waitFor(cfg, cfg.timing.IBI(iBlock) - thisBlock.cueDuration);
+            end
         end
         
         for iEvent = 1:cfg.design.nbEventsPerBlock

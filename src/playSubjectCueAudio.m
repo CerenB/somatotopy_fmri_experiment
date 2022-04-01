@@ -1,4 +1,4 @@
-function [thisBlock]  = playCueAudio(cfg, iBlock)
+function [thisBlock]  = playSubjectCueAudio(cfg, iBlock, thisBlock)
 
     %% Get parameters        
     soundData = cfg.soundData;
@@ -28,36 +28,31 @@ function [thisBlock]  = playCueAudio(cfg, iBlock)
     soundCh1 = soundData.(fieldName);
     soundCh2 = soundCh1;
     
-    % % give silence to subject's ear
+    % give silence to experimenter's ear
     if cfg.audio.doSplitHeadphone
         soundCh2 = soundData.silence; 
     end
     
     % it will play the name of the block and wait till rest of the gap
     % Start the sound presentation
-    PsychPortAudio('FillBuffer', cfg.audio.pahandle, [soundCh1;soundCh2]);
+    PsychPortAudio('FillBuffer', cfg.audio.pahandle, [soundCh2; soundCh1]);
     PsychPortAudio('Start', cfg.audio.pahandle,cfg.audio.cueRepeat);
-    
-                
-%     startTime = PsychPortAudio('Start', pahandle [, repetitions=1] [, when=0] [, waitForStart=0] [, stopTime=inf] [, resume=0]);
-%                     PsychPortAudio('FillBuffer', cfg.audio.pahandle, sound);
-%     PsychPortAudio('Start', cfg.audio.pahandle, [], ...
-%                     cfg.experimentStart + cfg.timing.audiCueOnset,1);
+
     onset = GetSecs;
     
-        % Get the end time
+    % Get the end time
     waitForEndOfPlayback = 1; 
     [onsetEnd, ~, ~, estStopTime] = PsychPortAudio('Stop', cfg.audio.pahandle, ...
                                                 waitForEndOfPlayback);
 
     duration = estStopTime - onsetEnd;
     duration2 = estStopTime - onset;
-    
+
     % save them into a structure
-    thisBlock.cueOnset = onset - cfg.experimentStart;
-    thisBlock.cueOnsetEnd = onsetEnd - onset;
-    thisBlock.cueDuration = duration;
-    thisBlock.cueDuration2  = duration2;
+    thisBlock.cueSubOnset = onset - cfg.experimentStart;
+    thisBlock.cueSubOnsetEnd = onsetEnd - cfg.experimentStart;
+    thisBlock.cueSubDuration = duration;
+    thisBlock.cueSubDuration2  = duration2;
 
             
 end

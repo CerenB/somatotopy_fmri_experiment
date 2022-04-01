@@ -16,9 +16,9 @@ function [cfg] = setParameters()
 
     %% Debug mode settings
 
-    cfg.debug.do = false; % To test the script out of the scanner, skip PTB sync
+    cfg.debug.do = true; % To test the script out of the scanner, skip PTB sync
     cfg.debug.smallWin = false; % To test on a part of the screen, change to 1
-    cfg.debug.transpWin = false; % To test with trasparent full size screen
+    cfg.debug.transpWin = true; % To test with trasparent full size screen
 
     cfg.verbose = 1;
 
@@ -125,7 +125,26 @@ function [cfg] = setParameters()
                     
     %% Auditory Stimulation
 
-    cfg.audio.channels = 1;
+    cfg.audio.channels = 2;
+    
+    cfg.audio.doSplitHeadphone = 0;
+    
+    if cfg.audio.doSplitHeadphone 
+        cfg.extraColumns = { ...
+                        'soundTarget', ...
+                        'fixationTarget', ...
+                        'event', ...
+                        'block', ...
+                        'expCueOnset', ...
+                        'expCueOnsetEnd', ...
+                        'expCueDuration',...
+                        'expCueDuration2',...
+                        'subCueOnset', ...
+                        'subCueOnsetEnd', ...
+                        'subCueDuration',...
+                        'subCueDuration2',...
+                        'keyName'}; 
+    end
     
     % repeat body part audio cues twice
     cfg.audio.cueRepeat = 2;
@@ -186,23 +205,16 @@ cfg.bids.mri.SliceTiming = [0, 0.9051, 0.0603, 0.9655, 0.1206, 1.0258, 0.181, ..
                       1.6896, 0.8448];
 
 %Number of seconds before the trial/blocks(exp) starts
-cfg.timing.onsetDelay = 4 *cfg.mri.repetitionTime; %7
+cfg.timing.onsetDelay = 4 *cfg.mri.repetitionTime; %7 s
 % Number of seconds after the end of all stimuli before ending the fmri run!
-cfg.timing.endDelay = 5 * cfg.mri.repetitionTime; %8.75
+cfg.timing.endDelay = 5 * cfg.mri.repetitionTime; %8.75 s
 
 % beginning of exp, give experimenter a cue to get ready for tactile stim
 cfg.timing.experimenterCueOnsetDelay = 2; % in s
 cfg.timing.afterCueOnsetDelay = cfg.timing.onsetDelay - cfg.timing.experimenterCueOnsetDelay;
 
-% % % currently not used % % %
-% ending timings for fMRI
-%end the screen after thank you screen
-cfg.timing.endScreenDelay = 2; 
-% delay for script ending
-% waiting time for participants responding how many times they detected the
-% velocity change
-cfg.timing.endResponseDelay = 10; 
-% % % % % % % %
+% 3s before the stimulation block, subject hears a cue
+cfg.timing.subjectCueOnset = 3; 
 
 
 end

@@ -12,10 +12,17 @@ function varargout = preTrialSetup(varargin)
     thisEvent.blockNb = cfg.design.blockOrder(iBlock);
 
     % save block info into thisEvent structure
-    thisEvent.blockCueOnset = thisBlock.cueOnset;
-    thisEvent.blockCueOnsetEnd = thisBlock.cueOnsetEnd;
-    thisEvent.blockCueDuration = thisBlock.cueDuration;
-    thisEvent.blockCueDuration2 = thisBlock.cueDuration2;
+    thisEvent.expCueOnset = thisBlock.cueOnset;
+    thisEvent.expCueOnsetEnd = thisBlock.cueOnsetEnd;
+    thisEvent.expCueDuration = thisBlock.cueDuration;
+    thisEvent.expCueDuration2 = thisBlock.cueDuration2;
+    
+    if cfg.audio.doSplitHeadphone
+        thisEvent.subCueOnset = thisBlock.cueSubOnset;
+        thisEvent.subCueOnsetEnd = thisBlock.cueSubOnsetEnd;
+        thisEvent.subCueDuration = thisBlock.cueSubDuration;
+        thisEvent.subCueDuration2 = thisBlock.cueSubDuration2;
+    end
     
     % think about calculating duration properly
     if mod(iEvent,12) == 1
