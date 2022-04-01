@@ -5,8 +5,8 @@ function [thisBlock]  = playCueAudio(cfg, iBlock)
     
     % set block name
     block = cfg.design.blockOrder(iBlock);
-    % ORDER [1:7] is hand, feet, nose, tongue, lips, cheek, forehead
-    % NEW ORDER [1:7] is hand, feet, lips, tongue, nose, cheek, forehead
+    % OLD ORDER [1:7] is hand, feet, nose, tongue, lips, cheek, forehead
+    % NEW ORDER [1:7] is hand, feet, lips, tongue, forehead
 
     switch block
         case 1
@@ -18,10 +18,6 @@ function [thisBlock]  = playCueAudio(cfg, iBlock)
         case 4
             fieldName = 'To';
         case 5
-            fieldName = 'N';
-        case 6
-            fieldName = 'C';
-        case 7
             fieldName = 'Fo';
     end
 
@@ -37,12 +33,6 @@ function [thisBlock]  = playCueAudio(cfg, iBlock)
     % Start the sound presentation
     PsychPortAudio('FillBuffer', cfg.audio.pahandle, [soundCh1;soundCh2]);
     PsychPortAudio('Start', cfg.audio.pahandle,cfg.audio.cueRepeat);
-    
-                
-%     startTime = PsychPortAudio('Start', pahandle [, repetitions=1] [, when=0] [, waitForStart=0] [, stopTime=inf] [, resume=0]);
-%                     PsychPortAudio('FillBuffer', cfg.audio.pahandle, sound);
-%     PsychPortAudio('Start', cfg.audio.pahandle, [], ...
-%                     cfg.experimentStart + cfg.timing.audiCueOnset,1);
     onset = GetSecs;
     
         % Get the end time

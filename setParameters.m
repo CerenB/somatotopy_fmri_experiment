@@ -46,20 +46,18 @@ function [cfg] = setParameters()
 
     %% Experiment Design
 
-    cfg.design.blockNames = {'hand','feet'}; 
-%     cfg.design.blockNames = {'hand','feet','nose', 'tongue', ...
-%                             'lips', 'cheek', 'forehead'}; 
-% order is important fur playing cues
-% NEW ORDER [1:7] is hand, feet, lips, tongue, nose, cheek, forehead
+    cfg.design.blockNames = {'hand','feet', 'lips', 'tongue', 'forehead'}; 
+    % order is important for playing cues
+    % NEW ORDER [1:7] is hand, feet, lips, tongue, forehead
 
     % per condition
-    cfg.design.nbRepetitions = 6; % main exp with 7 condition, repetition = 3;
+    cfg.design.nbRepetitions = 7; % main exp with 7 condition, repetition = 3;
 
     % we have 12s block, and we brush in every 1s
     cfg.design.nbEventsPerBlock = 12;
     
     % loudness adjustment
-    cfg.amp = 0.95;
+    cfg.amp = 0.99;
     %% Timing - NEED CARE
     % currently we present audio to the exp during the ISI and IBI
     % even duration = ISI + beep duration

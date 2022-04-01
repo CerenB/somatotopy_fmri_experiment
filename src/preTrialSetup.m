@@ -27,7 +27,6 @@ function varargout = preTrialSetup(varargin)
     % think about calculating duration properly
     if mod(iEvent,12) == 1
         thisEvent.trial_type = ['block_', cfg.design.blockNamesOrder{iBlock}];
-%         thisEvent.duration = 12;
     end
     
 
