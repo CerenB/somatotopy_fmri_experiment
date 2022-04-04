@@ -39,15 +39,13 @@ function [thisBlock]  = playCueAudio(cfg, iBlock)
     waitForEndOfPlayback = 1; 
     [onsetEnd, ~, ~, estStopTime] = PsychPortAudio('Stop', cfg.audio.pahandle, ...
                                                 waitForEndOfPlayback);
-
     duration = estStopTime - onsetEnd;
-    duration2 = estStopTime - onset;
     
     % save them into a structure
     thisBlock.cueAudOnset = onset - cfg.experimentStart;
-    thisBlock.cueAudOnsetEnd = onsetEnd - onset;
+    thisBlock.cueAudOnsetEnd = estStopTime - cfg.experimentStart;
     thisBlock.cueAudDuration = duration;
-    thisBlock.cueAudDuration2  = duration2;
+
 
             
 end

@@ -32,21 +32,18 @@ function [thisBlock]  = playSubjectCueAudio(cfg, iBlock, thisBlock)
     % it will play the name of the block and wait till rest of the gap
     % Start the sound presentation
     PsychPortAudio('FillBuffer', cfg.audio.pahandle, [soundCh2; soundCh1]);
-    PsychPortAudio('Start', cfg.audio.pahandle,cfg.audio.cueRepeat);
+    PsychPortAudio('Start', cfg.audio.pahandle,cfg.audio.cueSubRepeat);
     onset = GetSecs;
     
     % Get the end time
     waitForEndOfPlayback = 1; 
     [onsetEnd, ~, ~, estStopTime] = PsychPortAudio('Stop', cfg.audio.pahandle, ...
                                                 waitForEndOfPlayback);
-
     duration = estStopTime - onsetEnd;
-    duration2 = estStopTime - onset;
 
     % save them into a structure
     thisBlock.cueSubOnset = onset - cfg.experimentStart;
-    thisBlock.cueSubOnsetEnd = onsetEnd - cfg.experimentStart;
+    thisBlock.cueSubOnsetEnd = estStopTime - cfg.experimentStart;
     thisBlock.cueSubDuration = duration;
-    thisBlock.cueSubDuration2  = duration2;
             
 end

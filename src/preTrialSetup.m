@@ -11,12 +11,15 @@ function varargout = preTrialSetup(varargin)
     thisEvent.trial_type = cfg.design.blockNamesOrder{iBlock};
     thisEvent.blockNb = cfg.design.blockOrder(iBlock);
     
+    % store block IBI
+    thisEvent.ibi = cfg.timing.IBI(iBlock);
+    
     if cfg.doAudioCue
         % save block info into thisEvent structure
         thisEvent.expAudCueOnset = thisBlock.cueAudOnset;
         thisEvent.expAudCueOnsetEnd = thisBlock.cueAudOnsetEnd;
         thisEvent.expAudCueDuration = thisBlock.cueAudDuration;
-        thisEvent.expAudCueDuration2 = thisBlock.cueAudDuration2;
+%         thisEvent.expAudCueDuration2 = thisBlock.cueAudDuration2;
     elseif cfg.doVisualCue
         thisEvent.expVisCueOnset = thisBlock.cueVisOnset;
         thisEvent.expVisCueDuration = thisBlock.cueVisDuration;
@@ -26,7 +29,7 @@ function varargout = preTrialSetup(varargin)
         thisEvent.subCueOnset = thisBlock.cueSubOnset;
         thisEvent.subCueOnsetEnd = thisBlock.cueSubOnsetEnd;
         thisEvent.subCueDuration = thisBlock.cueSubDuration;
-        thisEvent.subCueDuration2 = thisBlock.cueSubDuration2;
+%         thisEvent.subCueDuration2 = thisBlock.cueSubDuration2;
     end
     
     % think about calculating duration properly

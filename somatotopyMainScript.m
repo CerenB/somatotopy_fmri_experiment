@@ -59,7 +59,8 @@ try
 
     for iBlock = 1:cfg.design.nbBlocks
 
-        fprintf('\n - Running block %s \n', cfg.design.blockNamesOrder{iBlock}); 
+        fprintf('\n - Running block %d, %s \n', iBlock, ...
+                cfg.design.blockNamesOrder{iBlock});
         
         if cfg.doAudioCue
            % experimenter's cue to know where to stimulate
@@ -77,6 +78,11 @@ try
             % play subject's cue
             % 2s cue hear it and then wait 1s then start stimulation
             if cfg.audio.doSplitHeadphone
+                % % % if participant cue is 3s before, you can delete this
+                % waitFor 
+                waitFor(cfg, cfg.timing.afterCueOnsetDelay - cfg.timing.subjectCueOnset...
+                             - thisBlock.cueDuration);
+                % % %
                 [thisBlock]  = playSubjectCueAudio(cfg, iBlock, thisBlock);
                 waitFor(cfg, cfg.timing.subjectCueOnset - thisBlock.cueSubDuration); 
             % wait time after auditory cue for beginning of exp
