@@ -48,6 +48,5 @@ function [thisBlock]  = playSubjectCueAudio(cfg, iBlock, thisBlock)
     thisBlock.cueSubOnsetEnd = onsetEnd - cfg.experimentStart;
     thisBlock.cueSubDuration = duration;
     thisBlock.cueSubDuration2  = duration2;
-
             
 end

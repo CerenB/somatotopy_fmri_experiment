@@ -49,8 +49,11 @@ function [cfg] = loadAudioFiles(cfg)
     [soundData.L, freq(9)] = audioread(fileName);
     soundData.L = soundData.L';
     
-    % load silence of 1s
+    % load cue length long silence 
     soundData.silence = zeros(1,length(soundData.H));
+    
+    % load exactly 1s of silence 
+    soundData.silenceBeep = zeros(1,cfg.audio.fs);
     
     % save them all
     cfg.soundData = soundData;

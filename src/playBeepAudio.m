@@ -11,10 +11,15 @@ function onset  = playBeepAudio(cfg, thisEvent)
     soundCh1 = soundData.(fieldName);
     soundCh2 = soundCh1;
     
+    % give silence to subject's ear
+    if ~cfg.beepForParticipant
+        soundCh2 = soundData.silenceBeep;     
+    end
+    
     % Start the sound presentation
     PsychPortAudio('FillBuffer', cfg.audio.pahandle, [soundCh1; soundCh2]);
-    PsychPortAudio('Start', cfg.audio.pahandle);
-    onset = GetSecs;
+    onset = PsychPortAudio('Start', cfg.audio.pahandle);
+   % onset = GetSecs;
 
     % PsychPortAudio('Start', pahandle, repetitions, startCue, waitForDeviceStart);
 
