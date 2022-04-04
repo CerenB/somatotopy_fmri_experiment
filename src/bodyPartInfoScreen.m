@@ -24,9 +24,9 @@ function [thisBlock] = bodyPartInfoScreen(cfg, textToPrint)
     duration = vblStopTime - vbl;
     
     % save them into a structure
-    thisBlock.cueOnset = vbl - cfg.experimentStart;
-    thisBlock.cueDuration = duration;
-    % dummy numbers
-    thisBlock.cueOnsetEnd = vblStopTime - cfg.experimentStart;
-    thisBlock.cueDuration2  = duration;
+    thisBlock.cueVisOnset = vbl - cfg.experimentStart;
+    thisBlock.cueVisDuration = duration;
+%     % dummy numbers
+%     thisBlock.cueVisOnsetEnd = vblStopTime - cfg.experimentStart;
+%     thisBlock.cueVisDuration2  = duration;
 end

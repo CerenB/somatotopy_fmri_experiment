@@ -10,12 +10,17 @@ function varargout = preTrialSetup(varargin)
     % set block name and targets
     thisEvent.trial_type = cfg.design.blockNamesOrder{iBlock};
     thisEvent.blockNb = cfg.design.blockOrder(iBlock);
-
-    % save block info into thisEvent structure
-    thisEvent.expCueOnset = thisBlock.cueOnset;
-    thisEvent.expCueOnsetEnd = thisBlock.cueOnsetEnd;
-    thisEvent.expCueDuration = thisBlock.cueDuration;
-    thisEvent.expCueDuration2 = thisBlock.cueDuration2;
+    
+    if cfg.doAudioCue
+        % save block info into thisEvent structure
+        thisEvent.expAudCueOnset = thisBlock.cueAudOnset;
+        thisEvent.expAudCueOnsetEnd = thisBlock.cueAudOnsetEnd;
+        thisEvent.expAudCueDuration = thisBlock.cueAudDuration;
+        thisEvent.expAudCueDuration2 = thisBlock.cueAudDuration2;
+    elseif cfg.doVisualCue
+        thisEvent.expVisCueOnset = thisBlock.cueVisOnset;
+        thisEvent.expVisCueDuration = thisBlock.cueVisDuration;
+    end
     
     if cfg.audio.doSplitHeadphone
         thisEvent.subCueOnset = thisBlock.cueSubOnset;

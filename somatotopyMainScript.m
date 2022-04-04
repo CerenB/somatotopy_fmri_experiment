@@ -64,11 +64,12 @@ try
         if cfg.doAudioCue
            % experimenter's cue to know where to stimulate
             [thisBlock]  = playCueAudio(cfg, iBlock);
-        end
-        
-        if cfg.doVisualCue
+            thisBlock.cueDuration = thisBlock.cueAudDuration;
+            
+        elseif cfg.doVisualCue
             %experimenter's visual cue to where where to move
             [thisBlock]  = bodyPartInfoScreen(cfg, cfg.design.blockNamesOrder{iBlock});
+            thisBlock.cueDuration = thisBlock.cueVisDuration;
         end
         
 
