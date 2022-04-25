@@ -34,33 +34,41 @@ try
     logFile = saveEventsFile('open', cfg, logFile);
     
     % want to see cfg?
-    disp(cfg);
+%     disp(cfg);
 
     % Show experiment instruction
-    standByScreen(cfg);
+    standByScreenWithText(cfg);
 
     % prepare the KbQueue to collect responses
     getResponse('init', cfg.keyboard.responseBox, cfg);
-
+    
     % Wait for Trigger from Scanner
     waitForTrigger(cfg);
     
     %% Experiment Start
 
+    % start with fixation corss & take time onset
     cfg = getExperimentStart(cfg);
-
+    
     getResponse('start', cfg.keyboard.responseBox);
 
     % after this wait time, exp hears the audio cue for which body part to
     % brush
-    waitFor(cfg, cfg.timing.experimenterCueOnsetDelay);
+    WaitSecs(cfg.timing.experimenterCueOnsetDelay);
      
     %% For Each Block
 
     for iBlock = 1:cfg.design.nbBlocks
 
-        fprintf('\n - Running block %d, %s \n', iBlock, ...
-                cfg.design.blockNamesOrder{iBlock});
+        currentBlock = cfg.design.blockNamesOrder{iBlock};
+        
+        fprintf('\n - Running block %d, %s \n', iBlock, currentBlock);
+        
+        if iBlock < cfg.design.nbBlocks
+            cfg.nextBlock = cfg.design.blockNamesOrder{iBlock+1};
+        else
+            cfg.nextBlock = ' done! ';
+        end
         
         if cfg.doAudioCue
            % experimenter's cue to know where to stimulate
@@ -69,7 +77,7 @@ try
             
         elseif cfg.doVisualCue
             %experimenter's visual cue to where where to move
-            [thisBlock]  = bodyPartInfoScreen(cfg, cfg.design.blockNamesOrder{iBlock});
+            [thisBlock]  = bodyPartInfoScreen(cfg, currentBlock);
             thisBlock.cueDuration = thisBlock.cueVisDuration;
         end
         
@@ -102,6 +110,9 @@ try
             end
         end
         
+        % present things visually to the screen
+        thisFixation = doVisual(cfg);
+        
         for iEvent = 1:cfg.design.nbEventsPerBlock
 
             fprintf('\n - Running trial %.0f \n', iEvent);
@@ -109,11 +120,11 @@ try
             % Check for experiment abortion from operator
             checkAbort(cfg, cfg.keyboard.keyboard);
 
-            [thisEvent, thisFixation, cfg] = preTrialSetup(cfg, iBlock, thisBlock, iEvent);
+            [thisEvent, cfg] = preTrialSetup(cfg, iBlock, thisBlock, iEvent);
 
 
             % play the sounds and collect onset and duration of the event
-            [onset, duration] = doAudioVisual(cfg, thisEvent, thisFixation);
+            [onset, duration] = doAudio(cfg, thisEvent);
             
             
             thisEvent = preSaveSetup( ...
@@ -132,7 +143,7 @@ try
     end
 
     % End of the run for the BOLD to go down
-    waitFor(cfg, cfg.timing.endDelay);
+    WaitSecs(cfg.timing.endDelay);
 
     cfg = getExperimentEnd(cfg);
 

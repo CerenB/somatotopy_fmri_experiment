@@ -40,11 +40,7 @@ function varargout = preTrialSetup(varargin)
 
     thisEvent.fixationTarget = cfg.design.fixationTargets(iBlock, iEvent);
     thisEvent.soundTarget = cfg.design.soundTargets(iBlock, iEvent);
-            
-    % If this frame shows a target we change the color of the cross
-    thisFixation.fixation = cfg.fixation;
-    thisFixation.screen = cfg.screen;
 
-    varargout = {thisEvent, thisFixation, cfg};
+    varargout = {thisEvent, cfg};
 
 end
