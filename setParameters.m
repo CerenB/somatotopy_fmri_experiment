@@ -16,7 +16,7 @@ function [cfg] = setParameters()
 
     cfg.debug.do = false; % To test the script out of the scanner, skip PTB sync
     cfg.debug.smallWin = false; % To test on a part of the screen, change to 1
-    cfg.debug.transpWin = true; % To test with trasparent full size screen
+    cfg.debug.transpWin = false; % To test with trasparent full size screen
 
     cfg.verbose = 1;
 
@@ -55,7 +55,7 @@ function [cfg] = setParameters()
     cfg.design.nbEventsPerBlock = 12;
     
     % loudness adjustment
-    cfg.amp = 0.99;
+    cfg.amp = 0.95;
     %% Timing - NEED CARE
     % present cue audio to experimenter and subject during the gap period
     % event duration = metronome beep duration
@@ -116,7 +116,7 @@ function [cfg] = setParameters()
                     
     %% Auditory Stimulation
     
-    cfg.audio.doSplitHeadphone = 1;
+    cfg.audio.doSplitHeadphone = 0;
     if cfg.audio.doSplitHeadphone 
         cfg.extraColumns = { ...
                         'soundTarget', ...
@@ -151,11 +151,11 @@ function [cfg] = setParameters()
     % visual or audio cue for the experimenter?
     % they wait each other, so it won't be simultenaous audio-vis presentation
     % either vis or audio cue ! not both! 
-    cfg.doVisualCue = 1;
-    cfg.doAudioCue = 0;
+    cfg.doVisualCue = 0;
+    cfg.doAudioCue = 1;
     
     % no metronome beeps to the participant?
-    cfg.beepForParticipant = 0; 
+    cfg.beepForParticipant = 1; 
     
 end
 
