@@ -55,9 +55,9 @@ function [cfg] = setParameters()
     cfg.design.nbEventsPerBlock = 12;
     
     % loudness adjustment
-    cfg.amp = 0.01; % insert 0.95 here if no need for different amp for 2 channels
+    cfg.amp = 0.95; % insert 0.95 here if no need for different amp for 2 channels
     cfg.ampExperimenter = 0.95/cfg.amp;
-    cfg.ampSubject = cfg.amp * 2;
+    cfg.ampSubject = cfg.amp; %  * 2
     
     %% Timing - NEED CARE
     % present cue audio to experimenter and subject during the gap period
@@ -154,8 +154,8 @@ function [cfg] = setParameters()
     % visual or audio cue for the experimenter?
     % they wait each other, so it won't be simultenaous audio-vis presentation
     % either vis or audio cue ! not both! 
-    cfg.doVisualCue = 0;
-    cfg.doAudioCue = 1;
+    cfg.doVisualCue = 1;
+    cfg.doAudioCue = 0;
     
     % no metronome beeps to the participant?
     cfg.beepForParticipant = 1; 
