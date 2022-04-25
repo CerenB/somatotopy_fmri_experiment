@@ -24,6 +24,11 @@ function [thisBlock]  = playSubjectCueAudio(cfg, iBlock, thisBlock)
     soundCh1 = soundData.(fieldName);
     soundCh2 = soundCh1;
     
+    % amplify to decrease the sound level for participant
+    if isfield(cfg, 'ampSubject')
+        soundCh1 = cfg.ampSubject .* soundCh1;
+    end
+    
     % give silence to experimenter's ear
     if cfg.audio.doSplitHeadphone
         soundCh2 = soundData.silence; 

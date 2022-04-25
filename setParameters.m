@@ -55,7 +55,10 @@ function [cfg] = setParameters()
     cfg.design.nbEventsPerBlock = 12;
     
     % loudness adjustment
-    cfg.amp = 0.95;
+    cfg.amp = 0.01; % insert 0.95 here if no need for different amp for 2 channels
+    cfg.ampExperimenter = 0.95/cfg.amp;
+    cfg.ampSubject = cfg.amp * 2;
+    
     %% Timing - NEED CARE
     % present cue audio to experimenter and subject during the gap period
     % event duration = metronome beep duration
@@ -116,7 +119,7 @@ function [cfg] = setParameters()
                     
     %% Auditory Stimulation
     
-    cfg.audio.doSplitHeadphone = 0;
+    cfg.audio.doSplitHeadphone = 1;
     if cfg.audio.doSplitHeadphone 
         cfg.extraColumns = { ...
                         'soundTarget', ...

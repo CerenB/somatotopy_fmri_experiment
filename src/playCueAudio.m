@@ -24,6 +24,11 @@ function [thisBlock]  = playCueAudio(cfg, iBlock)
     soundCh1 = soundData.(fieldName);
     soundCh2 = soundCh1;
     
+    % amplify more for the experimenter - if using a crappy NNL headphones
+    if isfield(cfg, 'ampExperimenter')
+        soundCh1 = cfg.ampExperimenter.* soundCh1;
+    end
+    
     % % give silence to subject's ear
     if cfg.audio.doSplitHeadphone
         soundCh2 = soundData.silence; 
