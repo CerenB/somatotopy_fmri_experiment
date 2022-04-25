@@ -6,9 +6,9 @@ function thisFixation = doVisual(cfg)
     thisFixation.screen = cfg.screen;
     
     
-    drawFixation(thisFixation);
-    vbl = Screen('Flip', cfg.screen.win);
+%     drawFixation(thisFixation);
+%     vbl = Screen('Flip', cfg.screen.win);
 
    showNextBlock(cfg, cfg.nextBlock)
-   Screen('Flip', cfg.screen.win, vbl + cfg.screen.ifi);
+   Screen('Flip', cfg.screen.win); % , vbl + cfg.screen.ifi
 end
