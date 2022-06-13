@@ -56,8 +56,8 @@ function [cfg] = setParameters()
     
     % loudness adjustment
     cfg.amp = 0.95; % insert 0.95 here if no need for different amp for 2 channels
-    cfg.ampExperimenter = 0.95/cfg.amp;
-    cfg.ampSubject = cfg.amp; %  * 2
+%     cfg.ampExperimenter = 0.95/cfg.amp;
+%     cfg.ampSubject = cfg.amp; %  * 2
     
     %% Timing - NEED CARE
     % present cue audio to experimenter and subject during the gap period
@@ -82,7 +82,7 @@ function [cfg] = setParameters()
     % task name 
     cfg.task.name = 'somatotopy';
     % it won't ask you about group or session
-    cfg.subject.askGrpSess = [0 0];
+    cfg.subject.askGrpSess = [1 0];
 
     % Instruction
     cfg.task.instruction = 'Count how many "no brushing trials"\n Press during gaps, how many you detected! \n\n';
@@ -154,8 +154,8 @@ function [cfg] = setParameters()
     % visual or audio cue for the experimenter?
     % they wait each other, so it won't be simultenaous audio-vis presentation
     % either vis or audio cue ! not both! 
-    cfg.doVisualCue = 1;
-    cfg.doAudioCue = 0;
+    cfg.doVisualCue = 0;
+    cfg.doAudioCue = 1;
     
     % no metronome beeps to the participant?
     cfg.beepForParticipant = 1; 
@@ -218,7 +218,7 @@ cfg.timing.experimenterCueOnsetDelay = 2; % in s
 cfg.timing.afterCueOnsetDelay = cfg.timing.onsetDelay - cfg.timing.experimenterCueOnsetDelay;
 
 % 3s before the stimulation block, subject hears a cue
-cfg.timing.subjectCueOnset = 3; 
+cfg.timing.subjectCueOnset = 2; 
 
 cfg.timing.visualCueDuration = 2;
 end
