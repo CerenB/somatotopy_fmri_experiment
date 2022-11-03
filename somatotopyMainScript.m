@@ -159,7 +159,7 @@ try
     % save config info
     saveCfg(cfg);
     
-    farewellScreen(cfg);
+  %  farewellScreen(cfg);
 
     cleanUp();
 
