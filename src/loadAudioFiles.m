@@ -5,57 +5,52 @@ function [cfg] = loadAudioFiles(cfg)
     freq = [];
     
     %load auditory beep sounds
-    % target sound
-    fileName = fullfile('input', '700Hz_250ms.wav');
-    if cfg.audio.moreBeeps
-        fileName = fullfile('input', '554Hz_125ms.wav');
-    end
-    
-    [soundData.T, freq(1)] = audioread(fileName);
-    soundData.T = soundData.T';
-
     % non-target sound
     fileName = fullfile('input', '350Hz_250ms.wav');
-    [soundData.NT, freq(2)] = audioread(fileName);
+    [soundData.NT, freq(1)] = audioread(fileName);
     soundData.NT = soundData.NT';
 
     %% load the cue
     
     fileName = fullfile('input', 'hand2.wav');
-    [soundData.H, freq(3)] = audioread(fileName);
+    if cfg.do.expInFrench == 1
+        fileName = fullfile('input','pouce_thumb.wav');
+    end
+    [soundData.H, freq(2)] = audioread(fileName);
     soundData.H = soundData.H';
     
     fileName = fullfile('input', 'feet.wav');
-    [soundData.Fe, freq(4)] = audioread(fileName);
+    if cfg.do.expInFrench == 1
+        fileName = fullfile('input','orteils_toe.wav');
+    end
+    [soundData.Fe, freq(3)] = audioread(fileName);
     soundData.Fe = soundData.Fe';
     
     fileName = fullfile('input', 'forehead.wav');
-    [soundData.Fo, freq(5)] = audioread(fileName);
+    if cfg.do.expInFrench == 1
+        fileName = fullfile('input','front_forehead.wav');
+    end    
+    [soundData.Fo, freq(4)] = audioread(fileName);
     soundData.Fo = soundData.Fo';
     
-    fileName = fullfile('input', 'nose.wav');
-    [soundData.N, freq(6)] = audioread(fileName);
-    soundData.N = soundData.N';
-    
-    fileName = fullfile('input', 'cheek.wav');
-    [soundData.C, freq(7)] = audioread(fileName);
-    soundData.C = soundData.C';
-
     fileName = fullfile('input', 'tongue2.wav');
-    [soundData.To, freq(8)] = audioread(fileName);
+    if cfg.do.expInFrench == 1
+        fileName = fullfile('input','langue_tongue.wav');
+    end  
+    [soundData.To, freq(5)] = audioread(fileName);
     soundData.To = soundData.To';
 
     fileName = fullfile('input', 'lips.wav');
-    [soundData.L, freq(9)] = audioread(fileName);
+    if cfg.do.expInFrench == 1
+        fileName = fullfile('input','levres_lips.wav');
+    end  
+    [soundData.L, freq(6)] = audioread(fileName);
     soundData.L = soundData.L';
     
-    % load cue length long silence 
+    % load silence of 1s
     soundData.silence = zeros(1,length(soundData.H));
     
-    % load exactly 1s of silence 
-    soundData.silenceBeep = zeros(1,cfg.audio.fs);
-    
-    % save them all
+    % save them all    
     cfg.soundData = soundData;
     
     %%
