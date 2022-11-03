@@ -43,6 +43,7 @@ function [cfg] = setParameters()
     cfg.pacedByTriggers.do = false;
 
     %% Experiment Design
+    cfg.do.expInFrench = 1;
     
     % order is important for playing cues
     cfg.design.blockNames = {'hand', 'feet', 'lips', 'tongue', 'forehead', 'forehead'}; 
@@ -52,7 +53,7 @@ function [cfg] = setParameters()
     cfg.design.extraForehead = 1; 
     
     % per condition
-    cfg.design.nbRepetitions = 4; % main exp with 5 condition, repetition = 3;
+    cfg.design.nbRepetitions = 2; % main exp with 5 condition, repetition = 3;
 
     % we have 12s block, and we brush in every 1s
     cfg.design.nbEventsPerBlock = 12;
@@ -103,7 +104,7 @@ function [cfg] = setParameters()
     cfg.fixation.yDisplacement = 0;
 
     % max number of targets within a block
-    cfg.target.maxNbPerBlock = 2;
+    cfg.target.maxNbPerBlock = 1;
     
     % the experimenter will brush not in 1s but in 500ms - higher velocity
     % only used in logfile
