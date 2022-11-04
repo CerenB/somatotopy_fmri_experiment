@@ -1,4 +1,4 @@
-function [onset, duration] = doAudio(cfg, thisEvent)
+function [onset, duration] = doAudio(cfg, thisEvent, iEvent)
 
     % Play the auditory stimulation of pure tone beeps (metronome)
     %
@@ -16,7 +16,7 @@ function [onset, duration] = doAudio(cfg, thisEvent)
     %% Get parameters
 
     % experimenter beep sound event
-    onset = playBeepAudio(cfg, thisEvent);
+    onset = playBeepAudio(cfg, thisEvent, iEvent);
 
 
     % Get the end time

@@ -124,7 +124,7 @@ try
 
 
             % play the sounds and collect onset and duration of the event
-            [onset, duration] = doAudio(cfg, thisEvent);
+            [onset, duration] = doAudio(cfg, thisEvent, iEvent);
             
             
             thisEvent = preSaveSetup( ...

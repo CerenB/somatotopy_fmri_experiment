@@ -164,6 +164,9 @@ function [cfg] = setParameters()
     % no metronome beeps to the participant?
     cfg.beepForParticipant = 1; 
     
+    % only 2 beeps to the participant
+    cfg.only2BeepForParticipant = 1;
+    
 end
 
 function cfg = setKeyboards(cfg)

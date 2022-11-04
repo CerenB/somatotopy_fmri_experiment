@@ -1,4 +1,4 @@
-function onset  = playBeepAudio(cfg, thisEvent)
+function onset  = playBeepAudio(cfg, thisEvent, iEvent)
 
     %% Get parameters        
     soundData = cfg.soundData;
@@ -17,8 +17,13 @@ function onset  = playBeepAudio(cfg, thisEvent)
     end
     
     % give silence to subject's ear
-    if ~cfg.beepForParticipant
-        soundCh2 = soundData.silenceBeep;     
+    if ~cfg.beepForParticipant 
+        soundCh2 = soundData.silenceBeep;  
+    end
+    
+    % give silence to subject unless it's first or the last beep
+    if cfg.only2BeepForParticipant && (iEvent > 1 && iEvent < 12)
+        soundCh2 = soundData.silenceBeep;
     end
     
     % Start the sound presentation

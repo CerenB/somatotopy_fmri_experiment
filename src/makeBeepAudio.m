@@ -26,9 +26,11 @@ t = [0 : round(eventDuration * fs)-1] / fs;
 % preallocate to silence/zeros as default
 eventNoTarget = zeros(1,length(t));
 
+% keep this silence piece
+cfg.soundData.silenceBeep = eventNoTarget; 
+
 %insert no-target sound event
 eventNoTarget(1:length(soundNoTarget)) = soundNoTarget;
-
     
 % arrange the almplitude
 eventNoTarget = eventNoTarget.*amplitude;
@@ -43,6 +45,6 @@ if cfg.audio.noTask
 end
 
 % % to visualise 1 pattern
-% figure; plot(t,eventTarget);
+% figure; plot(t,eventNoTarget);
 
 end 
