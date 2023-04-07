@@ -165,7 +165,7 @@ function [cfg] = setParameters()
     cfg.beepForParticipant = 1; 
     
     % only 2 beeps to the participant
-    cfg.only2BeepForParticipant = 1;
+    cfg.only2BeepForParticipant = 0;
     
 end
 
